@@ -17,4 +17,6 @@ public interface SubLoanRecordRepository extends JpaRepository<SubLoanRecord, St
     List<SubLoanRecord> findAllByLoanRecordAndActiveTrue(LoanRecord loanRecord);
 
     List<SubLoanRecord> findAllByLoanInfoAndActiveTrue(LoanInfo loanInfo);
+
+    SubLoanRecord findByReceiptNumberAndActiveTrue(String receiptNumber);
 }

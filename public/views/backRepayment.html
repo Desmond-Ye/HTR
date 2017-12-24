@@ -1,0 +1,35 @@
+<md-dialog aria-label="撤销还款">
+    <form name="repaymentForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>撤销还款</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <label>收据编号</label>
+                    <input required md-no-asterisk name="receiptNumber" ng-model="receiptNumber">
+                    <div ng-messages="repaymentForm.receiptNumber.$error">
+                        <div ng-messages-include="views/common/required.message.html"></div>
+                    </div>
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button class="md-raised md-primary" type="submit"
+                       ng-click="repaymentForm.$valid && saveLoanInfo()">
+                保存
+            </md-button>
+            <md-button class="md-raised md-warn" ng-click="cancel()">
+                取消
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

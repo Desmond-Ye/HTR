@@ -95,6 +95,22 @@
                 });
             };
 
+            $scope.showBackRepayment = function (ev) {
+
+                $mdDialog.show({
+                    controller: 'backRepaymentController',
+                    templateUrl: 'views/backRepayment.html',
+                    parent: angular.element(document.body),
+                    targetEvent: ev,
+                    clickOutsideToClose: false
+                }).then(function (answer) {
+                    if ('success' == answer) {
+                        findAllLoanInfo();
+                    }
+                }, function () {
+                });
+            };
+
             $scope.showDetailLoanRecords = function (ev) {
 
                 if ($scope.selected.length != 1) {
@@ -476,8 +492,13 @@
                     url: '/subLoanRecord/repayment',
                     data: $scope.subLoanRecord
                 };
-                $http(req).then(function () {
-                    $mdDialog.hide('success');
+                $http(req).then(function (responseData) {
+                    if (responseData.data.code === '200') {
+                        $mdDialog.hide('success');
+                    } else {
+                        alert(responseData.data.message);
+                    }
+
                 });
             };
 
@@ -523,6 +544,29 @@
                 str +='</html>';
                 $scope.oPop.document.write(str);
                 $scope.oPop.document.close();
+            };
+
+            $scope.cancel = function () {
+                $mdDialog.cancel();
+            };
+        }]);
+
+    loanInfo.controller('backRepaymentController', ['$scope', '$mdDialog', '$http', '$timeout', '$q',
+        function ($scope, $mdDialog, $http, $timeout, $q) {
+
+            $scope.saveLoanInfo = function () {
+                var req = {
+                    method: 'GET',
+                    url: '/subLoanRecord/backRepayment/' + $scope.receiptNumber
+                };
+                $http(req).then(function (responseData) {
+                    if (responseData.data.code === '200') {
+                        $mdDialog.hide('success');
+                    } else {
+                        alert(responseData.data.message);
+                    }
+
+                });
             };
 
             $scope.cancel = function () {

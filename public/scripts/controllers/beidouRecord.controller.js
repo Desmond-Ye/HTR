@@ -380,6 +380,8 @@
 
             $scope.installTypes = ['新装', '并网', '挂平台'];
 
+            $scope.vehicleTypes = ['重型半挂牵引车','重型自卸货车','重型仓栅式货车'];
+
             $scope.beidouBranchs = [];
             function findAllBeidouBranchs() {
                 var url = '/beidouBranch/1';

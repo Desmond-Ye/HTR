@@ -2,6 +2,7 @@ package com.htr.loan.web;
 
 import com.htr.loan.Utils.Constants;
 import com.htr.loan.Utils.WebUtil;
+import com.htr.loan.domain.LoanInfo;
 import com.htr.loan.domain.SubLoanRecord;
 import com.htr.loan.domain.User;
 import com.htr.loan.service.SubLoanRecordService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +43,54 @@ public class SubLoanRecordController {
     }
 
     @RequestMapping(value = "repayment", method = RequestMethod.POST)
-    public SubLoanRecord repayment(@RequestBody SubLoanRecord subLoanRecord, HttpSession session) {
+    public Map<String, String> repayment(@RequestBody SubLoanRecord subLoanRecord, HttpSession session) {
+        Map<String, String> result = null;
+        SubLoanRecord tempSubLoanRecord = subLoanRecordService.findByReceiptNumber(subLoanRecord.getReceiptNumber());
+        if(tempSubLoanRecord != null){
+            result = new HashMap<>();
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_FAIL);
+            result.put(Constants.RESPONSE_MSG, "收据编号不能重复!");
+            return result;
+        }
+
         User user = (User) session.getAttribute(Constants.SESSION_USER_KEY);
         subLoanRecord.setPayee(user);
-        return subLoanRecordService.repayment(subLoanRecord);
+        subLoanRecord = subLoanRecordService.repayment(subLoanRecord);
+        if(subLoanRecord != null){
+            result = new HashMap<>();
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_SUCCESS);
+            result.put(Constants.RESPONSE_MSG, "还款成功!");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "backRepayment/{receiptNumber}", method = RequestMethod.GET)
+    public Map<String, String> backRepayment(@PathVariable String receiptNumber) throws CloneNotSupportedException {
+        Map<String, String> result = null;
+        SubLoanRecord subLoanRecord = subLoanRecordService.findByReceiptNumber(receiptNumber);
+        if(subLoanRecord == null){
+            result = new HashMap<>();
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_FAIL);
+            result.put(Constants.RESPONSE_MSG, "收据编号错误,不存在本次还款!");
+            return result;
+        } else {
+            LoanInfo loanInfo = subLoanRecord.getLoanInfo();
+            List<SubLoanRecord> subLoanRecords = subLoanRecordService.findAllByLoanInfo(loanInfo.getUuid());
+            for(SubLoanRecord temp : subLoanRecords){
+                if(temp.getReceiptDate().getTime() > subLoanRecord.getReceiptDate().getTime()) {
+                    result = new HashMap<>();
+                    result.put(Constants.RESPONSE_CODE, Constants.CODE_FAIL);
+                    result.put(Constants.RESPONSE_MSG, "请先撤销上一次的还款!");
+                    return result;
+                }
+            }
+        }
+        subLoanRecord = subLoanRecordService.backRepayment(subLoanRecord);
+        if(!subLoanRecord.isActive()){
+            result = new HashMap<>();
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_SUCCESS);
+            result.put(Constants.RESPONSE_MSG, "还款成功!");
+        }
+        return result;
     }
 }

@@ -29,9 +29,9 @@ public class BaseTest extends LoanApplicationTests {
     @Test
     public void testSaveUser() {
         User user = new User();
-        user.setUserAccount("xinlin");
-        user.setUserName("新林");
-        user.setPassword("xinlin");
+        user.setUserAccount("admin");
+        user.setUserName("管理员");
+        user.setPassword("htr1qaz@WSX");
         Role userRole = roleService.findRoleByRoleName("超级管理员");
         user.setRoles(new ArrayList<Role>(Arrays.asList(userRole)));
         userService.saveUser(user, false);
@@ -54,6 +54,7 @@ public class BaseTest extends LoanApplicationTests {
         Resource resource1 = resourceService.findByResourceName("系统管理");
         Resource resource11 = resourceService.findByResourceName("用户管理");
         Resource resource12 = resourceService.findByResourceName("角色管理");
+        Resource resource121 = resourceService.findByResourceName("分配权限");
         Resource resource13 = resourceService.findByResourceName("日志查询");
 
         Resource resource2 = resourceService.findByResourceName("贷款管理");
@@ -71,6 +72,8 @@ public class BaseTest extends LoanApplicationTests {
         resources.add(resource22);
         resources.add(resource23);
         resources.add(resource24);
+
+        resources.add(resource121);
 
         role.setResources(resources);
         role = roleService.saveRole(role);
@@ -139,7 +142,7 @@ public class BaseTest extends LoanApplicationTests {
 //        subResource4.setResPath("loan/bankCard");
 //        subResource4.setParentRes(resource);
 //        subResource4 = resourceService.saveResource(subResource4);
-
+//
 //        Resource subResource5 = new Resource();
 //        subResource5.setResourceName("还款记录查询");
 //        subResource5.setResPath("loan/subLoanRecord");
@@ -152,26 +155,6 @@ public class BaseTest extends LoanApplicationTests {
 //        System.out.println(resource.getUuid());
 
 
-        Resource resource = resourceService.findByResourceName("档案管理");
-        Resource resource31_button6 = new Resource();
-        resource31_button6.setParentRes(resource);
-        resource31_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource31_button6.setResourceName("导出月报表");
-        resource31_button6.setResPath("exportMonthReport");
-
-
-        Resource resource31_button7 = new Resource();
-        resource31_button7.setParentRes(resource);
-        resource31_button7.setParentRes(resource);
-        resource31_button7.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource31_button7.setResourceName("导出欠款单");
-        resource31_button7.setResPath("exportLoanInfo");
-
-        List<Resource> resources = resource.getChildrenRes();
-        resources.add(resource31_button6);
-        resources.add(resource31_button7);
-        resourceService.saveResource(resource);
-
 
 //        Resource resource = new Resource();
 //        resource.setResourceName("北斗业务管理");
@@ -182,7 +165,7 @@ public class BaseTest extends LoanApplicationTests {
 //        subResource1.setResPath("beidou/beidouRecord");
 //        subResource1.setParentRes(resource);
 //        subResource1 = resourceService.saveResource(subResource1);
-
+//
 //        Resource subResource4 = new Resource();
 //        subResource4.setResourceName("分部管理");
 //        subResource4.setResPath("beidou/beidouBranch");
@@ -206,16 +189,7 @@ public class BaseTest extends LoanApplicationTests {
 //        System.out.println(resource.getUuid());
 
 
-       /* Resource resource = resourceService.findByResourceName("北斗业务管理");
-        Resource subResource4 = new Resource();
-        subResource4.setResourceName("分部管理");
-        subResource4.setResPath("beidou/beidouBranch");
-        subResource4.setParentRes(resource);
-        subResource4 = resourceService.saveResource(subResource4);
-        List<Resource> resources = resource.getChildrenRes();
-        resources.add(subResource4);
-        resourceService.saveResource(resource);
-*/
+
 
 
 //        Resource resource11 = resourceService.findByResourceName("用户管理");
@@ -244,7 +218,6 @@ public class BaseTest extends LoanApplicationTests {
 //        resource11_button4.setResPath("active");
 //        resource11.setChildrenRes(Arrays.asList(resource11_button1, resource11_button2, resource11_button3, resource11_button4));
 //        resourceService.saveResource(resource11);
-//
 //
 //        Resource resource12 = resourceService.findByResourceName("角色管理");
 //        Resource resource12_button1 = new Resource();
@@ -281,6 +254,7 @@ public class BaseTest extends LoanApplicationTests {
 //        resourceService.saveResource(resource12);
 //
 //
+//
 //        Resource resource21 = resourceService.findByResourceName("档案管理");
 //        Resource resource21_button1 = new Resource();
 //        resource21_button1.setParentRes(resource21);
@@ -300,6 +274,12 @@ public class BaseTest extends LoanApplicationTests {
 //        resource21_button3.setResourceName("还款");
 //        resource21_button3.setResPath("repayment");
 //
+//        Resource resource21_button8 = new Resource();
+//        resource21_button8.setParentRes(resource21);
+//        resource21_button8.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource21_button8.setResourceName("撤销还款");
+//        resource21_button8.setResPath("backRepayment");
+//
 //        Resource resource21_button4 = new Resource();
 //        resource21_button4.setParentRes(resource21);
 //        resource21_button4.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
@@ -312,10 +292,22 @@ public class BaseTest extends LoanApplicationTests {
 //        resource21_button5.setResourceName("查看还款明细");
 //        resource21_button5.setResPath("loanRecordDetail");
 //
-//        resource21.setChildrenRes(Arrays.asList(resource21_button1, resource21_button2, resource21_button3, resource21_button4, resource21_button5));
+//        Resource resource21_button6 = new Resource();
+//        resource21_button6.setParentRes(resource21);
+//        resource21_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource21_button6.setResourceName("导出欠款单");
+//        resource21_button6.setResPath("exportLoanInfo");
+//
+//        Resource resource21_button7 = new Resource();
+//        resource21_button7.setParentRes(resource21);
+//        resource21_button7.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource21_button7.setResourceName("导出月报表");
+//        resource21_button7.setResPath("exportMonthReport");
+//
+//        resource21.setChildrenRes(Arrays.asList(resource21_button1, resource21_button2, resource21_button3, resource21_button4, resource21_button5,resource21_button6,resource21_button7,resource21_button8));
 //        resourceService.saveResource(resource21);
-//
-//
+////
+////
 //        Resource resource22 = resourceService.findByResourceName("人员管理");
 //        Resource resource22_button1 = new Resource();
 //        resource22_button1.setParentRes(resource22);
@@ -338,7 +330,7 @@ public class BaseTest extends LoanApplicationTests {
 //        resource22.setChildrenRes(Arrays.asList(resource22_button1, resource22_button2, resource22_button3));
 //        resourceService.saveResource(resource22);
 //
-//
+////
 //        Resource resource23 = resourceService.findByResourceName("车辆管理");
 //        Resource resource23_button1 = new Resource();
 //        resource23_button1.setParentRes(resource23);
@@ -372,8 +364,8 @@ public class BaseTest extends LoanApplicationTests {
 //
 //        resource23.setChildrenRes(Arrays.asList(resource23_button1, resource23_button2, resource23_button3, resource23_button4, resource23_button5));
 //        resourceService.saveResource(resource23);
-//
-//
+////
+////
 //        Resource resource24 = resourceService.findByResourceName("银行卡管理");
 //        Resource resource24_button1 = new Resource();
 //        resource24_button1.setParentRes(resource24);
@@ -400,14 +392,14 @@ public class BaseTest extends LoanApplicationTests {
 //        resource24_button4.setResPath("active");
 //        resource24.setChildrenRes(Arrays.asList(resource24_button1, resource24_button2, resource24_button3, resource24_button4));
 //        resourceService.saveResource(resource24);
-
+//
 //        Resource resource31 = resourceService.findByResourceName("北斗档案管理");
 //        Resource resource31_button1 = new Resource();
 //        resource31_button1.setParentRes(resource31);
 //        resource31_button1.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
 //        resource31_button1.setResourceName("新增");
 //        resource31_button1.setResPath("new");
-
+//
 //        Resource resource31_button6 = new Resource();
 //        resource31_button6.setParentRes(resource31);
 //        resource31_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
@@ -437,16 +429,16 @@ public class BaseTest extends LoanApplicationTests {
 //        resource31_button5.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
 //        resource31_button5.setResourceName("查看维修记录");
 //        resource31_button5.setResPath("repairDetail");
-
+//
 //        Resource resource31_button7 = new Resource();
-//        resource31_button7.setParentRes(resource);
+//        resource31_button7.setParentRes(resource31);
 //        resource31_button7.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
 //        resource31_button7.setResourceName("维修");
 //        resource31_button7.setResPath("repair");
 //
 //        resource31.setChildrenRes(Arrays.asList(resource31_button1, resource31_button6, resource31_button2, resource31_button3, resource31_button4, resource31_button5, resource31_button7));
 //        resourceService.saveResource(resource31);
-
+//
 //        Resource resource32 = resourceService.findByResourceName("分部管理");
 //        Resource resource32_button1 = new Resource();
 //        resource32_button1.setParentRes(resource32);
@@ -473,6 +465,17 @@ public class BaseTest extends LoanApplicationTests {
 //        resource32_button4.setResPath("active");
 //        resource32.setChildrenRes(Arrays.asList(resource32_button1, resource32_button2, resource32_button3, resource32_button4));
 //        resourceService.saveResource(resource32);
+
+        Resource resource21 = resourceService.findByResourceName("档案管理");
+        Resource resource21_button8 = new Resource();
+        resource21_button8.setParentRes(resource21);
+        resource21_button8.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+        resource21_button8.setResourceName("撤销还款");
+        resource21_button8.setResPath("backRepayment");
+        List<Resource> resources = resource21.getChildrenRes();
+        resources.add(resource21_button8);
+        resource21.setChildrenRes(resources);
+        resourceService.saveResource(resource21);
     }
 
     @Test

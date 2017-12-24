@@ -1,6 +1,6 @@
 package com.htr.loan.service;
 
-import com.htr.loan.domain.LoanInfo;
+import com.htr.loan.domain.LoanRecord;
 import com.htr.loan.domain.SubLoanRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,4 +15,8 @@ public interface SubLoanRecordService {
     Page<SubLoanRecord> findAll(Map<String,Object> filterParams, Pageable pageable);
 
     List<SubLoanRecord> findAllByLoanInfo(String loanInfoID);
+
+    SubLoanRecord backRepayment(SubLoanRecord subLoanRecord);
+
+    SubLoanRecord findByReceiptNumber(String receiptNumber);
 }

@@ -251,13 +251,12 @@
                 url: '/user/changePassword',
                 data: $scope.password
             };
-            $http(req).then(function (responseDate) {
-                if (responseDate.data.code === '200') {
+            $http(req).then(function (responseData) {
+                if (responseData.data.code === '200') {
                     $mdDialog.hide('success');
                 } else {
-                    alert(responseDate.data.message);
+                    alert(responseData.data.message);
                 }
-
             });
 
         };
