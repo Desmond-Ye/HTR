@@ -1,6 +1,8 @@
 package com.htr.loan.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import java.util.Date;
 public class SubLoanRecord extends BaseDomain {
 
     @ManyToOne
+    @Cascade(CascadeType.PERSIST)
     private User payee;  //收款人
     private Double receipts; //收到的金额
     private String receiptNumber; //收据编号

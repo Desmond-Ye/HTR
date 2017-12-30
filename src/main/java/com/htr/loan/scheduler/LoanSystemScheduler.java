@@ -26,23 +26,19 @@ public class LoanSystemScheduler {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    @Scheduled(cron = "0 05 01 * * ?")
+    @Scheduled(cron = "0 5 1 * * ?")
     public void checkLoanInfosNextRepay(){
         LOG.info("*********检查下次还款日期----开始***********");
         List<LoanInfo> loanInfos = loanInfoRepository.findAllByActiveTrueAndCompletedFalse();
         loanInfos.forEach(loanInfo -> {
             LoanRecord nextRepay = loanInfo.getNextRepay();
-            if (null != nextRepay) {
-                nextRepay = LoanInfoHelper.checkTheNextRepay(loanInfo);
-                loanInfo.setNextRepay(nextRepay);
-            }
             loanInfo.setLeftDays(DateUtils.between(nextRepay.getExpectDate(), LocalDate.now()));
         });
         loanInfoRepository.save(loanInfos);
         LOG.info("*********检查下次还款日期----结束***********");
     }
 
-    @Scheduled(cron = "0 01 01 * * ?")
+    @Scheduled(cron = "0 10 1 * * ?")
     public void checkVehicleInsuranceLeftDays(){
         LOG.info("*********检查保险到期天数----开始***********");
         List<Vehicle> vehicles = vehicleRepository.findAllByActiveTrue();

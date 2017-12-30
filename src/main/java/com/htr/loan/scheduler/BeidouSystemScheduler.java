@@ -19,7 +19,7 @@ public class BeidouSystemScheduler {
     @Autowired
     private BeidouRecordRepository beidouRecordRepository;
 
-    @Scheduled(cron = "0 10 01 * * ?")
+    @Scheduled(cron = "0 15 1 * * ?")
     public void checkBeidouRecordsNextRepay(){
         LOG.info("*********检查下次还款日期----开始***********");
         List<BeidouRecord> beidouRecords = beidouRecordRepository.findAllByActiveTrue();
