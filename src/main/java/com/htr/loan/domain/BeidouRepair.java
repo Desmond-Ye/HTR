@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Entity
@@ -14,6 +15,8 @@ public class BeidouRepair extends BaseDomain {
 
     @ManyToOne
     private BeidouRecord beidouRecord; //档案
+    @Transient
+    private String beidouRecordId;
     private boolean changeTerminal; //是否换终端
     private String oldTerminal;  //原终端
     private String newTerminal;  //新终端号
@@ -32,6 +35,14 @@ public class BeidouRepair extends BaseDomain {
 
     public BeidouRecord getBeidouRecord() {
         return beidouRecord;
+    }
+
+    public String getBeidouRecordId() {
+        return beidouRecordId;
+    }
+
+    public void setBeidouRecordId(String beidouRecordId) {
+        this.beidouRecordId = beidouRecordId;
     }
 
     public void setBeidouRecord(BeidouRecord beidouRecord) {

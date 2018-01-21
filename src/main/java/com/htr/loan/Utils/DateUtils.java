@@ -95,6 +95,15 @@ public abstract class DateUtils {
 	}
 
 	/**
+	 * 现在天数加一天
+	 * @param date
+	 * @return
+	 */
+	public static Date addOneYears(final Date date) {
+		return org.apache.commons.lang3.time.DateUtils.addYears(date, 1);
+	}
+
+	/**
 	 * 格式化日期
 	 * @param date
 	 * @param sdf

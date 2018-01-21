@@ -40,10 +40,10 @@ public class LoanSystemScheduler {
 
     @Scheduled(cron = "0 10 1 * * ?")
     public void checkVehicleInsuranceLeftDays(){
-        LOG.info("*********检查保险到期天数----开始***********");
+        LOG.info("*********检查审车到期天数----开始***********");
         List<Vehicle> vehicles = vehicleRepository.findAllByActiveTrue();
-        vehicles.forEach(vehicle -> vehicle.setLeftDays(DateUtils.between(vehicle.getEndInsuranceTime(), LocalDate.now())));
+        vehicles.forEach(vehicle -> vehicle.setLeftDays(DateUtils.between(DateUtils.addOneYears(vehicle.getReviewDate()), LocalDate.now())));
         vehicleRepository.save(vehicles);
-        LOG.info("*********检查保险到期天数----结束***********");
+        LOG.info("*********检查审车到期天数----结束***********");
     }
 }

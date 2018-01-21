@@ -13,5 +13,7 @@ public interface BeidouRecordService {
 
     Page<BeidouRecord> findAll(Map<String, Object> filterParams, Pageable pageable);
 
+    BeidouRecord findByLicensePlate(String uuid);
+
     boolean removeBeidouRecords(List<BeidouRecord> beidouRecordList);
 }

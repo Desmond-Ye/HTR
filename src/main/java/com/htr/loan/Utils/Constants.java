@@ -68,6 +68,8 @@ public interface Constants {
     public static final String OPERATYPE_NOTDETAIN = "解扣";
     public static final String OPERATYPE_REPAYMENT = "还款";
     public static final String OPERATYPE_BACKREPAYMENT = "撤销还款";
+    public static final String OPERATYPE_BACKRENEWAL = "撤销续期";
+    public static final String OPERATYPE_BACKREPAIR = "撤销维修";
     public static final String OPERATYPE_CHANGEPWD = "修改密码";
 
     /**

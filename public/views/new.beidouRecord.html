@@ -30,18 +30,13 @@
                     </md-input-container>
                     <md-input-container>
                         <label>车辆型号</label>
-                        <input required md-no-asterisk name="vehicleNum" ng-model="beidouRecord.vehicleNum">
-                        <div ng-messages="newBeidouRecordForm.vehicleNum.$error">
-                            <div ng-messages-include="views/common/required.message.html"></div>
-                        </div>
+                        <input md-no-asterisk name="vehicleNum" ng-model="beidouRecord.vehicleNum">
                     </md-input-container>
                 </div>
                 <div layout="row">
-                    <md-input-container flex="30">
+                    <md-input-container>
                         <label>车辆类型</label>
-                        <md-select required name="vehicleType" ng-model="beidouRecord.vehicleType">
-                            <md-option ng-repeat="vehicleType in vehicleTypes" ng-value="vehicleType">{{vehicleType}}</md-option>
-                        </md-select>
+                        <input required md-no-asterisk name="vehicleType" ng-model="beidouRecord.vehicleType">
                         <div ng-messages="newBeidouRecordForm.vehicleType.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>

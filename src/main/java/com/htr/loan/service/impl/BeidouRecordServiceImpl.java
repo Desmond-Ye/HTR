@@ -68,6 +68,7 @@ public class BeidouRecordServiceImpl implements BeidouRecordService {
             SystemLog log;
             for (BeidouRecord beidouRecord : beidouRecordList) {
                 log = new SystemLog(Constants.MODULE_BEIDOURECORD, beidouRecord.getLicensePlate(), beidouRecord.getUuid(), Constants.OPERATYPE_DELETE);
+                beidouRecord = beidouRecordRepository.findOne(beidouRecord.getUuid());
                 beidouRecord.setActive(false);
                 List<BeidouRenewal> beidouRenewals = beidouRenewalRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
                 beidouRenewals.forEach(beidouRenewal -> beidouRenewal.setActive(false));
@@ -91,5 +92,10 @@ public class BeidouRecordServiceImpl implements BeidouRecordService {
         Map<String, SearchFilter> filterMap = SearchFilter.parse(filterParams);
         return beidouRecordRepository.findAll(DynamicSpecifications
                 .bySearchFilter(filterMap.values(), BeidouRecord.class), pageable);
+    }
+
+    @Override
+    public BeidouRecord findByLicensePlate(String licensePlate){
+        return beidouRecordRepository.findByLicensePlateAndActiveTrue(licensePlate);
     }
 }

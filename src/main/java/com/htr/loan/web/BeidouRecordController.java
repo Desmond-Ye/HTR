@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +49,17 @@ public class BeidouRecordController {
     }
 
     @RequestMapping(value = "save", method = RequestMethod.POST)
-    public BeidouRecord saveBeidouRecord(@RequestBody BeidouRecord beidouRecord){
-        return beidouRecordService.saveBeidouRecord(beidouRecord);
+    public Map<String, String> saveBeidouRecord(@RequestBody BeidouRecord beidouRecord){
+        BeidouRecord beidouRecordTemp = beidouRecordService.findByLicensePlate(beidouRecord.getLicensePlate());
+        Map<String, String> result = new HashMap<>();
+        if(null == beidouRecordTemp){
+            beidouRecordService.saveBeidouRecord(beidouRecord);
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_SUCCESS);
+        } else {
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_FAIL);
+            result.put(Constants.RESPONSE_MSG, "车牌号已存在!");
+        }
+        return result;
     }
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)

@@ -82,32 +82,21 @@
 
                 <div layout="row">
                     <md-input-container>
-                        <label>保险开始时间</label>
-                        <input required md-no-asterisk uib-datepicker-popup name="startInsuranceTime"
-                               ng-model="vehicle.startInsuranceTime"
-                               ng-click="openDatePopup('startInsuranceTime')" is-open="datePopup.startInsuranceTime"
+                        <label>审车时间</label>
+                        <input required md-no-asterisk uib-datepicker-popup name="reviewDate"
+                               ng-model="vehicle.reviewDate"
+                               ng-click="openDatePopup('reviewDate')" is-open="datePopup.reviewDate"
                                show-button-bar="false"/>
-                        <div ng-messages="newVehicleForm.startInsuranceTime.$error">
+                        <div ng-messages="newVehicleForm.reviewDate.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>
                     </md-input-container>
                     <md-input-container>
-                        <label>保险到期时间</label>
-                        <input required md-no-asterisk uib-datepicker-popup name="endInsuranceTime"
-                               ng-model="vehicle.endInsuranceTime"
-                               ng-click="openDatePopup('endInsuranceTime')" is-open="datePopup.endInsuranceTime"
-                               show-button-bar="false"/>
-                        <div ng-messages="newVehicleForm.endInsuranceTime.$error">
-                            <div ng-messages-include="views/common/required.message.html"></div>
-                        </div>
+                        <md-checkbox name="detain" ng-model="vehicle.detain">
+                            是否被扣留
+                        </md-checkbox>
                     </md-input-container>
                 </div>
-
-                <md-input-container class="md-block">
-                    <md-checkbox name="detain" ng-model="vehicle.detain">
-                        是否被扣留
-                    </md-checkbox>
-                </md-input-container>
             </form>
         </div>
     </md-dialog-content>

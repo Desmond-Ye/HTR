@@ -11,4 +11,5 @@ public interface BeidouRecordRepository extends JpaRepository<BeidouRecord, Stri
 
     List<BeidouRecord> findAllByBeidouBranchAndActiveTrue(BeidouBranch beidouBranch);
     List<BeidouRecord> findAllByActiveTrue();
+    BeidouRecord findByLicensePlateAndActiveTrue(String licensePlate);
 }

@@ -1,6 +1,7 @@
 package com.htr.loan.service.impl;
 
 import com.htr.loan.Utils.Constants;
+import com.htr.loan.Utils.DateUtils;
 import com.htr.loan.Utils.DynamicSpecifications;
 import com.htr.loan.Utils.SearchFilter;
 import com.htr.loan.domain.BeidouRecord;
@@ -39,23 +40,23 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
     @Override
     public BeidouRepair saveBeidouRepair(BeidouRepair beidouRepair) {
         try {
+            BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRepair.getBeidouRecordId());
+            beidouRepair.setBeidouRecord(beidouRecord);
             SystemLog log = new SystemLog(Constants.MODULE_BEIDOUREPAIR, beidouRepair.getBeidouRecord().getLicensePlate());
             log.setOperaType(Constants.OPERATYPE_ADD);
-            //新装设置新卡号和老卡号相同
-            BeidouRecord beidouRecord = beidouRepair.getBeidouRecord();
             //换新卡
-            if(beidouRepair.getChangeCardType() == 0){
+            if (beidouRepair.getChangeCardType() == 0) {
                 beidouRecord.setBorrowCardFlow(false);
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRepair.getNewCardNum());
-            } else if(beidouRepair.getChangeCardType() == -1) {
+            } else if (beidouRepair.getChangeCardType() == -1) {
                 beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRepair.getNewCardNum());
                 beidouRecord.setBorrowCardFlow(true);
             }
             //是否换终端
-            if(beidouRepair.isChangeTerminal()){
+            if (beidouRepair.isChangeTerminal()) {
                 beidouRepair.setOldTerminal(beidouRecord.getTerminalNum());
                 beidouRecord.setTerminalNum(beidouRepair.getNewTerminal());
             }
@@ -74,20 +75,63 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
     }
 
     @Override
-    public boolean removeBeidouRepairs(List<BeidouRepair> beidouRepairList) {
+    public boolean backBeidouRepair(String beidouRecordID) {
         try {
-            SystemLog log;
-            for (BeidouRepair beidouRepair : beidouRepairList) {
-                log = new SystemLog(Constants.MODULE_BEIDOUREPAIR, beidouRepair.getBeidouRecord().getLicensePlate(),
-                        beidouRepair.getUuid(), Constants.OPERATYPE_DELETE);
-                beidouRepair.setActive(false);
-                beidouRepairRepository.save(beidouRepair);
-                systemLogRepository.save(log);
+            BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
+            BeidouRepair beidouRepairTop1 = beidouRepairRepository.findTopByBeidouRecordAndActiveTrue(beidouRecord);
+            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRepairTop1.getBeidouRecord().getLicensePlate(),
+                    beidouRepairTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
+
+            if(beidouRepairTop1 == null) {
+                return false;
             }
+
+            List<BeidouRepair> beidouRepairs = beidouRepairRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            BeidouRepair beidouRepairTop2 = null;
+            for (BeidouRepair tempRepair : beidouRepairs) {
+                if (tempRepair.getUuid().equals(beidouRepairTop1.getUuid())) {
+                    continue;
+                }
+                if (beidouRepairTop2 == null) {
+                    beidouRepairTop2 = tempRepair;
+                } else {
+                    if (DateUtils.between(beidouRepairTop2.getCreatedDate(), tempRepair.getCreatedDate()) < 0) {
+                        beidouRepairTop2 = tempRepair;
+                    }
+                }
+            }
+
+            if (beidouRepairTop2 == null || beidouRepairTop2.getChangeCardType() != -1) {
+                if (beidouRepairTop1.getChangeCardType() == 0) {
+                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+                } else if (beidouRepairTop1.getChangeCardType() == -1) {
+                    beidouRecord.setBorrowCardFlow(false);
+                    beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+                }
+            } else {
+                if (beidouRepairTop1.getChangeCardType() == 0) {
+                    beidouRecord.setBorrowCardFlow(true);
+                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+                } else if (beidouRepairTop1.getChangeCardType() == -1) {
+                    beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+                }
+            }
+
+            //是否换终端
+            if (beidouRepairTop1.isChangeTerminal()) {
+                beidouRecord.setTerminalNum(beidouRepairTop1.getOldCardNum());
+            }
+
+            beidouRepairTop1.setActive(false);
+            beidouRepairRepository.save(beidouRepairTop1);
+            beidouRecordRepository.save(beidouRecord);
+            systemLogRepository.save(log);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            LOG.error("delete BeidouRepair fail!");
+            LOG.error("back BeidouRepair fail!");
         }
         return false;
     }
@@ -95,7 +139,7 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
     @Override
     public List<BeidouRepair> findAllByBeidouRecord(String beidouRecordID) {
         BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
-        if(null != beidouRecord){
+        if (null != beidouRecord) {
             return beidouRepairRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
         }
         LOG.error("Cannot find the match beidouRecord by UUID" + beidouRecordID);

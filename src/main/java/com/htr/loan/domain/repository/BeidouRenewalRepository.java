@@ -13,4 +13,6 @@ public interface BeidouRenewalRepository extends JpaRepository<BeidouRenewal, St
     List<BeidouRenewal> findAllByBeidouRecordAndActiveTrue(BeidouRecord beidouRecord);
 
     List<BeidouRenewal> findAllByBeidouBranchAndActiveTrue(BeidouBranch beidouBranch);
+
+    BeidouRenewal findTopByBeidouRecordAndActiveTrue(BeidouRecord beidouRecord);
 }

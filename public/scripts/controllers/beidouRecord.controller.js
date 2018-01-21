@@ -380,7 +380,7 @@
 
             $scope.installTypes = ['新装', '并网', '挂平台'];
 
-            $scope.vehicleTypes = ['重型半挂牵引车','重型自卸货车','重型仓栅式货车'];
+            // $scope.vehicleTypes = ['重型半挂牵引车','重型自卸货车','重型仓栅式货车'];
 
             $scope.beidouBranchs = [];
             function findAllBeidouBranchs() {
@@ -416,8 +416,12 @@
                     url: '/beidouRecord/save',
                     data: $scope.beidouRecord
                 };
-                $http(req).then(function () {
-                    $mdDialog.hide('success');
+                $http(req).then(function (responseData) {
+                    if (responseData.data.code === '200') {
+                        $mdDialog.hide('success');
+                    } else {
+                        alert(responseData.data.message);
+                    }
                 });
 
             };
@@ -500,7 +504,7 @@
                 } else {
                     $scope.beidouRenewal.changeCard = false;
                 }
-                $scope.beidouRenewal.beidouRecord = $scope.beidouRecord;
+                $scope.beidouRenewal.beidouRecordId = $scope.beidouRecord.uuid;
                 var req = {
                     method: 'POST',
                     url: '/beidouRenewal/renewal',
@@ -582,9 +586,7 @@
             $scope.beidouRecord = beidouRecord ? angular.copy(beidouRecord) : {};
 
             $scope.beidouRepair = {
-                renewalDate: new Date(),
-                renewalFee:840,
-                months:12
+                repairDate: new Date()
             };
 
             $scope.saveBeidouRepair = function () {
@@ -596,7 +598,7 @@
                 } else {
                     $scope.beidouRepair.changeCard = false;
                 }
-                $scope.beidouRepair.beidouRecord = $scope.beidouRecord;
+                $scope.beidouRepair.beidouRecordId = $scope.beidouRecord.uuid;
                 var req = {
                     method: 'POST',
                     url: '/beidouRepair/repair',

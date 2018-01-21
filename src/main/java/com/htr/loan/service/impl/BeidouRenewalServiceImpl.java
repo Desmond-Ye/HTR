@@ -6,15 +6,9 @@ import com.htr.loan.Utils.DynamicSpecifications;
 import com.htr.loan.Utils.SearchFilter;
 import com.htr.loan.domain.BeidouRecord;
 import com.htr.loan.domain.BeidouRenewal;
-import com.htr.loan.domain.BeidouRenewal;
-import com.htr.loan.domain.BeidouRepair;
-import com.htr.loan.domain.LoanInfo;
-import com.htr.loan.domain.SubLoanRecord;
 import com.htr.loan.domain.SystemLog;
 import com.htr.loan.domain.repository.BeidouRecordRepository;
 import com.htr.loan.domain.repository.BeidouRenewalRepository;
-import com.htr.loan.domain.repository.BeidouRenewalRepository;
-import com.htr.loan.domain.repository.BeidouRepairRepository;
 import com.htr.loan.domain.repository.SystemLogRepository;
 import com.htr.loan.service.BeidouRenewalService;
 import org.slf4j.Logger;
@@ -48,23 +42,22 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
     @Override
     public BeidouRenewal saveBeidouRenewal(BeidouRenewal beidouRenewal) {
         try {
+            BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRenewal.getBeidouRecordId());
+            beidouRenewal.setBeidouRecord(beidouRecord);
             SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRenewal.getBeidouRecord().getLicensePlate());
             log.setOperaType(Constants.OPERATYPE_ADD);
-            //新装设置新卡号和老卡号相同
-            BeidouRecord beidouRecord = beidouRenewal.getBeidouRecord();
-            //换新卡
-            if(beidouRenewal.getChangeCardType() == 0){
+            if (beidouRenewal.getChangeCardType() == 0) {
                 beidouRecord.setBorrowCardFlow(false);
+                beidouRenewal.setOldCardNum(beidouRecord.getOldCardNum());
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
-                beidouRenewal.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRenewal.getNewCardNum());
-            } else if(beidouRenewal.getChangeCardType() == -1) {
+            } else if (beidouRenewal.getChangeCardType() == -1) {
                 beidouRecord.setBorrowCardFlow(true);
                 beidouRenewal.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRenewal.getNewCardNum());
             }
             //是否换终端
-            if(beidouRenewal.isChangeTerminal()){
+            if (beidouRenewal.isChangeTerminal()) {
                 beidouRenewal.setOldTerminal(beidouRecord.getTerminalNum());
                 beidouRecord.setTerminalNum(beidouRenewal.getNewTerminal());
             }
@@ -87,20 +80,68 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
     }
 
     @Override
-    public boolean removeBeidouRenewals(List<BeidouRenewal> beidouRenewalList) {
+    public boolean backBeidouRenewal(String beidouRecordID) {
         try {
-            SystemLog log;
-            for (BeidouRenewal beidouRenewal : beidouRenewalList) {
-                log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRenewal.getBeidouRecord().getLicensePlate(),
-                        beidouRenewal.getUuid(), Constants.OPERATYPE_DELETE);
-                beidouRenewal.setActive(false);
-                beidouRenewalRepository.save(beidouRenewal);
-                systemLogRepository.save(log);
+            BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
+            BeidouRenewal beidouRenewalTop1 = beidouRenewalRepository.findTopByBeidouRecordAndActiveTrue(beidouRecord);
+            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRenewalTop1.getBeidouRecord().getLicensePlate(),
+                    beidouRenewalTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
+
+            if(beidouRenewalTop1 == null) {
+                return false;
             }
+
+            List<BeidouRenewal> beidouRenewals = beidouRenewalRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            BeidouRenewal beidouRenewalTop2 = null;
+            for (BeidouRenewal tempRenewal : beidouRenewals) {
+                if (tempRenewal.getUuid().equals(beidouRenewalTop1.getUuid())) {
+                    continue;
+                }
+                if (beidouRenewalTop2 == null) {
+                    beidouRenewalTop2 = tempRenewal;
+                } else {
+                    if (DateUtils.between(beidouRenewalTop2.getCreatedDate(), tempRenewal.getCreatedDate()) < 0) {
+                        beidouRenewalTop2 = tempRenewal;
+                    }
+                }
+            }
+
+            if (beidouRenewalTop2 == null || beidouRenewalTop2.getChangeCardType() != -1) {
+                if (beidouRenewalTop1.getChangeCardType() == 0) {
+                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                } else if (beidouRenewalTop1.getChangeCardType() == -1) {
+                    beidouRecord.setBorrowCardFlow(false);
+                    beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+                }
+            } else {
+                if (beidouRenewalTop1.getChangeCardType() == 0) {
+                    beidouRecord.setBorrowCardFlow(true);
+                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                } else if (beidouRenewalTop1.getChangeCardType() == -1) {
+                    beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+                }
+            }
+
+            //是否换终端
+            if (beidouRenewalTop1.isChangeTerminal()) {
+                beidouRecord.setTerminalNum(beidouRenewalTop1.getOldCardNum());
+            }
+
+            //更新剩余天数
+            Date expirTime = org.apache.commons.lang3.time.DateUtils.addMonths(beidouRecord.getExpireTime(), 0 - beidouRenewalTop1.getMonths());
+            beidouRecord.setExpireTime(expirTime);
+            beidouRecord.setLeftDays(DateUtils.between(beidouRecord.getExpireTime(), LocalDate.now()));
+
+            beidouRenewalTop1.setActive(false);
+            beidouRenewalRepository.save(beidouRenewalTop1);
+            beidouRecordRepository.save(beidouRecord);
+            systemLogRepository.save(log);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            LOG.error("delete BeidouRenewal fail!");
+            LOG.error("back BeidouRenewal fail!");
         }
         return false;
     }
@@ -108,7 +149,7 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
     @Override
     public List<BeidouRenewal> findAllByBeidouRecord(String beidouRecordID) {
         BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
-        if(null != beidouRecord){
+        if (null != beidouRecord) {
             return beidouRenewalRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
         }
         LOG.error("Cannot find the match beidouRecord by UUID" + beidouRecordID);

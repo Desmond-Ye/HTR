@@ -13,7 +13,7 @@ public interface BeidouRenewalService {
 
     Page<BeidouRenewal> findAll(Map<String, Object> filterParams, Pageable pageable);
 
-    boolean removeBeidouRenewals(List<BeidouRenewal> beidouRenewalList);
+    boolean backBeidouRenewal(String beidouRecordID);
 
     List<BeidouRenewal> findAllByBeidouRecord(String beidouRecordID);
 }
