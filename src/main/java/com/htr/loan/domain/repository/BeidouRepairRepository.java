@@ -13,6 +13,4 @@ public interface BeidouRepairRepository extends JpaRepository<BeidouRepair, Stri
     List<BeidouRepair> findAllByBeidouRecordAndActiveTrue(BeidouRecord beidouRecord);
 
     List<BeidouRepair> findAllByBeidouBranchAndActiveTrue(BeidouBranch beidouBranch);
-
-    BeidouRepair findTopByBeidouRecordAndActiveTrue(BeidouRecord beidouRecord);
 }

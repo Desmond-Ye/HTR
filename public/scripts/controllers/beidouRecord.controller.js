@@ -169,6 +169,75 @@
                 });
             };
 
+            $scope.showBackRenewal = function (ev) {
+
+                if ($scope.selected.length != 1) {
+                    var editMessage = '';
+                    if ($scope.selected.length == 0) {
+                        editMessage = '请选择一项档案撤销续费!';
+                    }
+                    if ($scope.selected.length > 1) {
+                        editMessage = '只能选择一项!';
+                    }
+
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent(editMessage)
+                            .position('top right')
+                            .hideDelay(2000)
+                    );
+                    return;
+                }
+
+                var req = {
+                    method: 'GET',
+                    url: '/beidouRenewal/backRenewal/' + $scope.selected[0].uuid,
+                };
+                $http(req).then(function (responseData) {
+                    if (responseData.data.code === '200') {
+                        alert("撤销成功!");
+                        findAllBeidouRecord();
+                    } else {
+                        alert(responseData.data.message);
+                    }
+                });
+            };
+
+            $scope.showBackRepair = function (ev) {
+
+                if ($scope.selected.length != 1) {
+                    var editMessage = '';
+                    if ($scope.selected.length == 0) {
+                        editMessage = '请选择一项档案撤销维修!';
+                    }
+                    if ($scope.selected.length > 1) {
+                        editMessage = '只能选择一项!';
+                    }
+
+                    $mdToast.show(
+                        $mdToast.simple()
+                            .textContent(editMessage)
+                            .position('top right')
+                            .hideDelay(2000)
+                    );
+                    return;
+                }
+
+                var req = {
+                    method: 'GET',
+                    url: '/beidouRepair/backRepair/' + $scope.selected[0].uuid,
+                };
+                $http(req).then(function (responseData) {
+                    if (responseData.data.code === '200') {
+                        alert("撤销成功!");
+                        findAllBeidouRecord();
+                    } else {
+                        alert(responseData.data.message);
+                    }
+                });
+
+            };
+
             $scope.showRenewalDetail = function (ev) {
 
                 if ($scope.selected.length != 1) {

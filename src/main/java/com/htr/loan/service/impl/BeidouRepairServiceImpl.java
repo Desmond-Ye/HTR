@@ -47,13 +47,18 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
             //换新卡
             if (beidouRepair.getChangeCardType() == 0) {
                 beidouRecord.setBorrowCardFlow(false);
+                beidouRepair.setOldCardNum(beidouRecord.getOldCardNum());
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
-                beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRepair.getNewCardNum());
             } else if (beidouRepair.getChangeCardType() == -1) {
-                beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
+                if(beidouRecord.getBorrowCardFlow()){
+                    beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
+                } else {
+                    beidouRecord.setBorrowCardFlow(true);
+                    beidouRepair.setOldCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
+                }
                 beidouRecord.setNewCardNum(beidouRepair.getNewCardNum());
-                beidouRecord.setBorrowCardFlow(true);
             }
             //是否换终端
             if (beidouRepair.isChangeTerminal()) {
@@ -78,15 +83,26 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
     public boolean backBeidouRepair(String beidouRecordID) {
         try {
             BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
-            BeidouRepair beidouRepairTop1 = beidouRepairRepository.findTopByBeidouRecordAndActiveTrue(beidouRecord);
-            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRepairTop1.getBeidouRecord().getLicensePlate(),
-                    beidouRepairTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
-
-            if(beidouRepairTop1 == null) {
+            List<BeidouRepair> beidouRepairs = beidouRepairRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            if(beidouRepairs == null || beidouRepairs.size() == 0) {
                 return false;
             }
 
-            List<BeidouRepair> beidouRepairs = beidouRepairRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            BeidouRepair beidouRepairTop1 = null;
+
+            for (BeidouRepair tempRepair : beidouRepairs) {
+                if(beidouRepairTop1 == null) {
+                    beidouRepairTop1 = tempRepair;
+                } else {
+                    if (beidouRepairTop1.getCreatedDate().getTime() < tempRepair.getCreatedDate().getTime()) {
+                        beidouRepairTop1 = tempRepair;
+                    }
+                }
+            }
+
+            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRepairTop1.getBeidouRecord().getLicensePlate(),
+                    beidouRepairTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
+
             BeidouRepair beidouRepairTop2 = null;
             for (BeidouRepair tempRepair : beidouRepairs) {
                 if (tempRepair.getUuid().equals(beidouRepairTop1.getUuid())) {
@@ -95,32 +111,53 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
                 if (beidouRepairTop2 == null) {
                     beidouRepairTop2 = tempRepair;
                 } else {
-                    if (DateUtils.between(beidouRepairTop2.getCreatedDate(), tempRepair.getCreatedDate()) < 0) {
+                    if (beidouRepairTop2.getCreatedDate().getTime() < tempRepair.getCreatedDate().getTime()
+                            && beidouRepairTop2.getChangeCardType() != 2) {
                         beidouRepairTop2 = tempRepair;
                     }
                 }
             }
 
-            if (beidouRepairTop2 == null || beidouRepairTop2.getChangeCardType() != -1) {
-                if (beidouRepairTop1.getChangeCardType() == 0) {
-                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
-                    beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
-                } else if (beidouRepairTop1.getChangeCardType() == -1) {
-                    beidouRecord.setBorrowCardFlow(false);
-                    beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
-                }
-            } else {
-                if (beidouRepairTop1.getChangeCardType() == 0) {
-                    beidouRecord.setBorrowCardFlow(true);
-                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
-                    beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
-                } else if (beidouRepairTop1.getChangeCardType() == -1) {
-                    beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+            if(beidouRepairTop1.getChangeCardType() != 2){
+                //如果撤销本次为换卡
+                if(beidouRepairTop1.getChangeCardType() == 0){
+                    //是否有上一次记录
+                    if(beidouRepairTop2 == null ){
+                        beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+                        beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+                    } else {
+                        if(beidouRepairTop2.getChangeCardType() == 0){
+                            beidouRecord.setBorrowCardFlow(false);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+
+                        } else {
+                            beidouRecord.setBorrowCardFlow(true);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+                        }
+                    }
+                //撤销本次为借流量
+                } else {
+                    //是否有上一次记录
+                    if(beidouRepairTop2 == null){
+                        beidouRecord.setBorrowCardFlow(false);
+                        beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+                    }else {
+                        if(beidouRepairTop2.getChangeCardType() == 0){
+                            beidouRecord.setBorrowCardFlow(false);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRepairTop1.getOldCardNum());
+                        } else {
+                            beidouRecord.setBorrowCardFlow(true);
+                            beidouRecord.setNewCardNum(beidouRepairTop1.getOldCardNum());
+                        }
+                    }
                 }
             }
 
             //是否换终端
-            if (beidouRepairTop1.isChangeTerminal()) {
+            if (beidouRepairTop1.isChangeTerminal() && beidouRepairTop1.getOldCardNum() != null) {
                 beidouRecord.setTerminalNum(beidouRepairTop1.getOldCardNum());
             }
 

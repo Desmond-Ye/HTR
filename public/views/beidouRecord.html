@@ -64,8 +64,14 @@
                 <md-button class="md-raised md-primary" ng-show="currentButtons.renewal.show"
                            ng-click="showRenewal($event)">{{currentButtons.renewal.name}}</md-button>
 
+                <md-button class="md-raised md-warn" ng-show="currentButtons.backRenewal.show"
+                           ng-click="showBackRenewal($event)">{{currentButtons.backRenewal.name}}</md-button>
+
                 <md-button class="md-raised md-primary" ng-show="currentButtons.repair.show"
                            ng-click="showRepair($event)">{{currentButtons.repair.name}}</md-button>
+
+                <md-button class="md-raised md-warn" ng-show="currentButtons.backRepair.show"
+                           ng-click="showBackRepair($event)">{{currentButtons.backRepair.name}}</md-button>
 
                 <md-button class="md-raised md-accent" ng-show="currentButtons.renewalDetail.show"
                            ng-click="showRenewalDetail($event)">{{currentButtons.renewalDetail.name}}</md-button>

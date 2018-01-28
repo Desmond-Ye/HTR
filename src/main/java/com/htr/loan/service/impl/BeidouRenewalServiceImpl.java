@@ -52,8 +52,13 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRenewal.getNewCardNum());
             } else if (beidouRenewal.getChangeCardType() == -1) {
-                beidouRecord.setBorrowCardFlow(true);
-                beidouRenewal.setOldCardNum(beidouRecord.getNewCardNum());
+                if(beidouRecord.getBorrowCardFlow()){
+                    beidouRenewal.setOldCardNum(beidouRecord.getNewCardNum());
+                } else {
+                    beidouRecord.setBorrowCardFlow(true);
+                    beidouRenewal.setOldCardNum(beidouRecord.getOldCardNum());
+                    beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
+                }
                 beidouRecord.setNewCardNum(beidouRenewal.getNewCardNum());
             }
             //是否换终端
@@ -83,15 +88,26 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
     public boolean backBeidouRenewal(String beidouRecordID) {
         try {
             BeidouRecord beidouRecord = beidouRecordRepository.findOne(beidouRecordID);
-            BeidouRenewal beidouRenewalTop1 = beidouRenewalRepository.findTopByBeidouRecordAndActiveTrue(beidouRecord);
-            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRenewalTop1.getBeidouRecord().getLicensePlate(),
-                    beidouRenewalTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
-
-            if(beidouRenewalTop1 == null) {
+            List<BeidouRenewal> beidouRenewals = beidouRenewalRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            if(beidouRenewals == null || beidouRenewals.size() == 0) {
                 return false;
             }
 
-            List<BeidouRenewal> beidouRenewals = beidouRenewalRepository.findAllByBeidouRecordAndActiveTrue(beidouRecord);
+            BeidouRenewal beidouRenewalTop1 = null;
+
+            for (BeidouRenewal tempRenewal : beidouRenewals) {
+                if(beidouRenewalTop1 == null) {
+                    beidouRenewalTop1 = tempRenewal;
+                } else {
+                    if (beidouRenewalTop1.getCreatedDate().getTime() < tempRenewal.getCreatedDate().getTime()) {
+                        beidouRenewalTop1 = tempRenewal;
+                    }
+                }
+            }
+
+            SystemLog log = new SystemLog(Constants.MODULE_BEIDOURENEWAL, beidouRenewalTop1.getBeidouRecord().getLicensePlate(),
+                    beidouRenewalTop1.getUuid(), Constants.OPERATYPE_BACKRENEWAL);
+
             BeidouRenewal beidouRenewalTop2 = null;
             for (BeidouRenewal tempRenewal : beidouRenewals) {
                 if (tempRenewal.getUuid().equals(beidouRenewalTop1.getUuid())) {
@@ -100,32 +116,53 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
                 if (beidouRenewalTop2 == null) {
                     beidouRenewalTop2 = tempRenewal;
                 } else {
-                    if (DateUtils.between(beidouRenewalTop2.getCreatedDate(), tempRenewal.getCreatedDate()) < 0) {
+                    if (beidouRenewalTop2.getCreatedDate().getTime() < tempRenewal.getCreatedDate().getTime()
+                            && beidouRenewalTop2.getChangeCardType() != 2) {
                         beidouRenewalTop2 = tempRenewal;
                     }
                 }
             }
 
-            if (beidouRenewalTop2 == null || beidouRenewalTop2.getChangeCardType() != -1) {
-                if (beidouRenewalTop1.getChangeCardType() == 0) {
-                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
-                    beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
-                } else if (beidouRenewalTop1.getChangeCardType() == -1) {
-                    beidouRecord.setBorrowCardFlow(false);
-                    beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
-                }
-            } else {
-                if (beidouRenewalTop1.getChangeCardType() == 0) {
-                    beidouRecord.setBorrowCardFlow(true);
-                    beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
-                    beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
-                } else if (beidouRenewalTop1.getChangeCardType() == -1) {
-                    beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+            if(beidouRenewalTop1.getChangeCardType() != 2){
+
+                //如果撤销本次为换卡
+                if(beidouRenewalTop1.getChangeCardType() == 0){
+                    //是否有上一次记录
+                    if(beidouRenewalTop2 == null ){
+                        beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                        beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+                    } else {
+                        if(beidouRenewalTop2.getChangeCardType() == 0){
+                            beidouRecord.setBorrowCardFlow(false);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                        } else {
+                            beidouRecord.setBorrowCardFlow(true);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                        }
+                    }
+                    //撤销本次为借流量
+                } else {
+                    //是否有上一次记录
+                    if(beidouRenewalTop2 == null){
+                        beidouRecord.setBorrowCardFlow(false);
+                        beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+                    }else {
+                        if(beidouRenewalTop2.getChangeCardType() == 0){
+                            beidouRecord.setBorrowCardFlow(false);
+                            beidouRecord.setNewCardNum(beidouRecord.getOldCardNum());
+                            beidouRecord.setOldCardNum(beidouRenewalTop1.getOldCardNum());
+                        } else {
+                            beidouRecord.setBorrowCardFlow(true);
+                            beidouRecord.setNewCardNum(beidouRenewalTop1.getOldCardNum());
+                        }
+                    }
                 }
             }
 
             //是否换终端
-            if (beidouRenewalTop1.isChangeTerminal()) {
+            if (beidouRenewalTop1.isChangeTerminal() && beidouRenewalTop1.getOldCardNum() != null) {
                 beidouRecord.setTerminalNum(beidouRenewalTop1.getOldCardNum());
             }
 
