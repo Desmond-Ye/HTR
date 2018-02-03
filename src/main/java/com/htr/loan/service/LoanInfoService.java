@@ -19,4 +19,6 @@ public interface LoanInfoService {
     HSSFWorkbook exportMonthReport();
 
     HSSFWorkbook exportLoanInfo();
+
+    HSSFWorkbook exportLoanInfoDetail(String loanInfoID);
 }

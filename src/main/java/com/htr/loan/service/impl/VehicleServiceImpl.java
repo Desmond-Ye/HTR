@@ -44,7 +44,9 @@ public class VehicleServiceImpl implements VehicleService {
             } else {
                 log.setOperaType(Constants.OPERATYPE_ADD);
             }
-            vehicle.setLeftDays(DateUtils.between(vehicle.getEndInsuranceTime(), LocalDate.now()));
+            if(null != vehicle.getReviewDate()){
+                vehicle.setLeftDays(DateUtils.between(DateUtils.addOneYears(vehicle.getReviewDate()), LocalDate.now()));
+            }
             vehicle = vehicleRepository.save(vehicle);
             log.setRecordId(vehicle.getUuid());
             systemLogRepository.save(log);

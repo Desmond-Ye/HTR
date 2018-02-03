@@ -60,10 +60,13 @@
                 </md-checkbox></th>
                 <th><div class="">#</div></th>
                 <th class="col-sm-1">姓名</th>
+                <th class="col-sm-1">配偶姓名</th>
+                <th class="col-sm-2">地址</th>
+                <th class="col-sm-2">配偶地址</th>
+                <th class="col-sm-1">身份证号</th>
+                <th class="col-sm-1">配偶身份证号</th>
                 <th class="col-sm-3">电话</th>
                 <th class="col-sm-1">类型</th>
-                <th class="col-sm-5">地址</th>
-                <th class="col-sm-2">身份证号</th>
             </tr>
             </thead>
             <tbody>
@@ -72,10 +75,13 @@
                 </md-checkbox></td>
                 <td>{{$index + 1}}</td>
                 <td>{{person.name}}</td>
+                <td>{{person.spouseName}}</td>
+                <td>{{person.address}}</td>
+                <td>{{person.spouseAddress}}</td>
+                <td>{{person.idNumber}}</td>
+                <td>{{person.spouseIdNumber}}</td>
                 <td>{{person.phoneInfos | phoneNums}}</td>
                 <td>{{person.surety | isSurety}}</td>
-                <td>{{person.address}}</td>
-                <td>{{person.idNumber}}</td>
             </tr>
             </tbody>
         </table>

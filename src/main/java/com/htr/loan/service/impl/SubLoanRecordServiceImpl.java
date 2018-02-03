@@ -147,7 +147,7 @@ public class SubLoanRecordServiceImpl implements SubLoanRecordService {
             LoanInfo loanInfo = subLoanRecord.getLoanInfo();
             LoanRecord beforeRepay = LoanInfoHelper.findCurrentRepay(loanInfo, loanInfo.getNextRepay().getLoanNum() - 1);
             List<LoanRecord> tempLoanRecords = new ArrayList<>();
-            while (!beforeRepay.getUuid().equals(subLoanRecord.getLoanRecord().getUuid())){
+            while (beforeRepay != null && !beforeRepay.getUuid().equals(subLoanRecord.getLoanRecord().getUuid())){
                 tempLoanRecords.add(beforeRepay);
                 beforeRepay = LoanInfoHelper.findCurrentRepay(loanInfo, beforeRepay.getLoanNum() - 1);
             }

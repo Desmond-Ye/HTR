@@ -13,4 +13,14 @@
                 }
             };
         });
+
+    vehicle.filter('isTrailer', function () {
+        return function (trailer) {
+            if(trailer){
+                return "挂车";
+            } else {
+                return "主车";
+            }
+        };
+    });
 })();

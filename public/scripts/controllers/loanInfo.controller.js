@@ -364,7 +364,7 @@
 
             findAllVehicle();
 
-            function querySearchVehicle(query) {
+            function querySearchVehicle(query, israiler) {
                 var results = query ? $scope.vehicles.filter(createFilterForVehicle(query)) : $scope.vehicles;
                 var deferred = $q.defer();
                 $timeout(function () {
@@ -378,25 +378,6 @@
                     return (vehicle.licensePlate.indexOf(query) >= 0);
                 };
             }
-
-            $scope.addNewVehicle = function (ev) {
-                $mdDialog.show({
-                    multiple: true,
-                    controller: 'newVehicleController',
-                    templateUrl: 'views/new.vehicle.html',
-                    parent: angular.element(document.body),
-                    targetEvent: ev,
-                    clickOutsideToClose: false,
-                    locals: {
-                        vehicle: {}
-                    }
-                }).then(function (answer) {
-                    if ('success' == answer) {
-                        findAllVehicle();
-                    }
-                }, function () {
-                });
-            };
 
             $scope.loanInfo.loanRecords = [];
             $scope.$watchGroup(['loanInfo.loansNum', 'loanInfo.loanDate'], function (newValues) {
@@ -523,6 +504,10 @@
 
             $scope.datePopup = {
                 receiptDate: false
+            };
+
+            $scope.exportCurrentLoanInfo = function (loanInfoID) {
+                window.location.href = "/loanInfo/exportLoanInfoDetail/" + loanInfoID;
             };
 
             $scope.printLoanInfo = function () {

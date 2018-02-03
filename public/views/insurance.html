@@ -1,0 +1,104 @@
+<md-card class="_md">
+    <md-card-title>
+        <md-card-title-text>
+            <span class="md-headline">保险管理</span>
+        </md-card-title-text>
+    </md-card-title>
+    <md-card-header>
+        <div layout="row" layout-wrap>
+            <section flex="100" layout="row" layout-sm="column" layout-align="center bottom" layout-wrap>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>姓名</label>
+                    <input ng-model="facet['search_LIKE_vehicle.holder.name']">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>车牌号</label>
+                    <input ng-model="facet['search_LIKEIGNORE_vehicle.licensePlate']">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>保险名称</label>
+                    <input ng-model="facet.search_LIKE_insuranceName">
+                </md-input-container>
+                <md-input-container class="md-block" flex-gt-sm>
+                    <label>保险公司</label>
+                    <input ng-model="facet.search_LIKEIGNORE_insuranceCompany">
+                </md-input-container>
+                <div class="md-block" flex-gt-sm>
+                    <md-button class="md-raised" ng-click="searchInsurances()">查询</md-button>
+                </div>
+            </section>
+            <section layout="row" layout-sm="column" layout-align="left bottom" layout-wrap>
+                <md-button class="md-raised" ng-show="currentButtons.new.show" ng-click="showNewInsurance($event)">
+                    {{currentButtons.new.name}}
+                </md-button>
+                <md-button class="md-raised md-primary" ng-show="currentButtons.update.show"
+                           ng-click="showEditInsurance($event)">{{currentButtons.update.name}}
+                </md-button>
+                <md-button class="md-raised md-warn" ng-show="currentButtons.delete.show"
+                           ng-click="removeInsurances($event)">{{currentButtons.delete.name}}
+                </md-button>
+                <md-button class="md-raised md-primary" ng-show="currentButtons.detain.show"
+                           ng-click="detainInsurances($event)">{{currentButtons.detain.name}}</md-button>
+                <md-button class="md-raised md-accent" ng-show="currentButtons.unDetain.show"
+                           ng-click="unDetainInsurances($event)">{{currentButtons.unDetain.name}}</md-button>
+                <div class="label">Raised</div>
+            </section>
+        </div>
+    </md-card-header>
+    <md-card-content>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>
+                    <md-checkbox aria-label="Select All"
+                                 ng-checked="isChecked()"
+                                 md-indeterminate="isIndeterminate()"
+                                 ng-click="toggleAll()">
+                    </md-checkbox>
+                </th>
+                <th>
+                    <div>#</div>
+                </th>
+                <th class="col-sm-1">车牌号</th>
+                <th class="col-sm-1">车主</th>
+                <!--<th class="col-sm-2">电话号码</th>-->
+                <th class="col-sm-1">上户时间</th>
+                <th class="col-sm-1">审车时间</th>
+                <th class="col-sm-1">保险名称</th>
+                <th class="col-sm-1">保险公司</th>
+                <th class="col-sm-2">保单号</th>
+                <th class="col-sm-1">投保时间</th>
+                <th class="col-sm-1">保险到期时间</th>
+                <th class="col-sm-1">保险额</th>
+                <th class="col-sm-1">距离到期天数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="insurance in items">
+                <td>
+                    <md-checkbox aria-label="Select one" ng-checked="exists(insurance, selected)"
+                                 ng-click="toggle(insurance, selected)">
+                    </md-checkbox>
+                </td>
+                <td>{{$index + 1}}</td>
+                <td>{{insurance.vehicle.licensePlate }}</td>
+                <td>{{insurance.vehicle.holder.name }}</td>
+                <!--<td>{{insurance.vehicle.holder.phoneInfos | phoneNums }}</td>-->
+                <td>{{insurance.vehicle.registrationDate }}</td>
+                <td>{{insurance.vehicle.reviewDate }}</td>
+                <td>{{insurance.insuranceName }}</td>
+                <td>{{insurance.insuranceCompany }}</td>
+                <td>{{insurance.insuranceNum }}</td>
+                <td>{{insurance.startInsuranceTime }}</td>
+                <td>{{insurance.endInsuranceTime }}</td>
+                <td>{{insurance.insuranceFee | currency:'¥' }}</td>
+                <td>{{insurance.leftDays | isOverdue}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <section layout="row" layout-align="end end">
+            <cl-paging flex cl-pages="paging.total" , cl-steps="6" , cl-page-changed="paging.onPageChanged()" , cl-align="center center" , cl-current-page="paging.current"></cl-paging>
+            总共 {{paging.totalElements}} 条记录
+        </section>
+    </md-card-content>
+</md-card>

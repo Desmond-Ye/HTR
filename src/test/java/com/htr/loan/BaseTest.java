@@ -466,14 +466,35 @@ public class BaseTest extends LoanApplicationTests {
 //        resource32.setChildrenRes(Arrays.asList(resource32_button1, resource32_button2, resource32_button3, resource32_button4));
 //        resourceService.saveResource(resource32);
 
-        Resource resource21 = resourceService.findByResourceName("档案管理");
-        Resource resource21_button8 = new Resource();
-        resource21_button8.setParentRes(resource21);
-        resource21_button8.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource21_button8.setResourceName("撤销还款");
-        resource21_button8.setResPath("backRepayment");
+        Resource resource21 = resourceService.findByResourceName("贷款管理");
         List<Resource> resources = resource21.getChildrenRes();
-        resources.add(resource21_button8);
+
+        Resource subResource2 = new Resource();
+        subResource2.setResourceName("保险管理");
+        subResource2.setResPath("loan/insurance");
+        subResource2.setParentRes(resource21);
+        resources.add(subResource2);
+
+        Resource resource31_button1 = new Resource();
+        resource31_button1.setParentRes(subResource2);
+        resource31_button1.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+        resource31_button1.setResourceName("新增");
+        resource31_button1.setResPath("new");
+
+        Resource resource31_button6 = new Resource();
+        resource31_button6.setParentRes(subResource2);
+        resource31_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+        resource31_button6.setResourceName("修改");
+        resource31_button6.setResPath("update");
+
+        Resource resource31_button2 = new Resource();
+        resource31_button2.setParentRes(subResource2);
+        resource31_button2.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+        resource31_button2.setResourceName("删除");
+        resource31_button2.setResPath("delete");
+
+        subResource2.setChildrenRes(Arrays.asList(resource31_button1,resource31_button6,resource31_button2));
+
         resource21.setChildrenRes(resources);
         resourceService.saveResource(resource21);
     }

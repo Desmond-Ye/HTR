@@ -16,15 +16,14 @@ public class Vehicle extends BaseDomain {
     private Person holder;  //所有人
     private String licensePlate;  //车牌号
     private String frameNumber;  //车架号
+    private String engineNumber; //发动机号
     private Double evaluation; //预估价
     @JsonFormat
     private Date registrationDate; //上户时间
-    @JsonFormat
-    private Date startInsuranceTime; //开始保险时间
-    @JsonFormat
-    private Date endInsuranceTime; //保险到期时间
-    private long leftDays;//剩余还款天数
+    private Date reviewDate; //审车时间
     private boolean detain; //是否被扣留
+    private long leftDays;//距离下次审车时间
+    private boolean trailer; //是挂车吗
 
     public String getBrand() {
         return brand;
@@ -58,6 +57,14 @@ public class Vehicle extends BaseDomain {
         this.frameNumber = frameNumber;
     }
 
+    public String getEngineNumber() {
+        return engineNumber;
+    }
+
+    public void setEngineNumber(String engineNumber) {
+        this.engineNumber = engineNumber;
+    }
+
     public Double getEvaluation() {
         return evaluation;
     }
@@ -74,20 +81,20 @@ public class Vehicle extends BaseDomain {
         this.registrationDate = registrationDate;
     }
 
-    public Date getStartInsuranceTime() {
-        return startInsuranceTime;
+    public Date getReviewDate() {
+        return reviewDate;
     }
 
-    public void setStartInsuranceTime(Date startInsuranceTime) {
-        this.startInsuranceTime = startInsuranceTime;
+    public void setReviewDate(Date reviewDate) {
+        this.reviewDate = reviewDate;
     }
 
-    public Date getEndInsuranceTime() {
-        return endInsuranceTime;
+    public boolean isDetain() {
+        return detain;
     }
 
-    public void setEndInsuranceTime(Date endInsuranceTime) {
-        this.endInsuranceTime = endInsuranceTime;
+    public void setDetain(boolean detain) {
+        this.detain = detain;
     }
 
     public long getLeftDays() {
@@ -98,11 +105,11 @@ public class Vehicle extends BaseDomain {
         this.leftDays = leftDays;
     }
 
-    public boolean isDetain() {
-        return detain;
+    public boolean isTrailer() {
+        return trailer;
     }
 
-    public void setDetain(boolean detain) {
-        this.detain = detain;
+    public void setTrailer(boolean trailer) {
+        this.trailer = trailer;
     }
 }

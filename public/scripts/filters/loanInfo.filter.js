@@ -65,4 +65,26 @@
             return listName.join("/");
         };
     });
+
+    loanInfo.filter('listLicensePlate', function () {
+        return function (loanInfo) {
+            if (!loanInfo) return;
+            if(loanInfo.trailer){
+                return loanInfo.vehicle.licensePlate + "/" + loanInfo.trailer.licensePlate;
+            } else {
+                return loanInfo.vehicle.licensePlate;
+            }
+        };
+    });
+
+    loanInfo.filter('listSurety', function () {
+        return function (loanInfo) {
+            if (!loanInfo) return;
+            if(loanInfo.secondSurety){
+                return loanInfo.surety.name + "/" + loanInfo.secondSurety.name;
+            } else {
+                return loanInfo.surety.name;
+            }
+        };
+    });
 })();

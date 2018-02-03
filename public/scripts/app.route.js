@@ -24,6 +24,9 @@
             }).when('/loan/person', {
                 templateUrl: 'views/person.html',
                 controller: 'personController'
+            }).when('/loan/insurance', {
+                templateUrl: 'views/insurance.html',
+                controller: 'insuranceController'
             }).when('/loan/bankCard', {
                 templateUrl: 'views/bankCard.html',
                 controller: 'bankCardController'
@@ -49,6 +52,7 @@
                 templateUrl: 'views/beidouRepair.html',
                 controller: 'beidouRepairController'
             });
+
 
             $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

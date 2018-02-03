@@ -15,7 +15,6 @@ import java.util.Date;
 public class SubLoanRecord extends BaseDomain {
 
     @ManyToOne
-    @Cascade(CascadeType.PERSIST)
     private User payee;  //收款人
     private Double receipts; //收到的金额
     private String receiptNumber; //收据编号

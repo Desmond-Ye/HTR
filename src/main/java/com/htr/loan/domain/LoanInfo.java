@@ -17,9 +17,13 @@ import java.util.List;
 public class LoanInfo extends BaseDomain {
     private String loanInfoNum; //档案号
     @OneToOne
-    private Person surety; //担保人
+    private Person surety; //主担保人
+    @OneToOne
+    private Person secondSurety; //次担保人
     @OneToOne
     private Vehicle vehicle; //车辆信息
+    @OneToOne
+    private Vehicle trailer; //挂车信息
     @ManyToOne
     private BankCard bankCard; //银行卡
     private Double loanAmount; //贷款额
@@ -55,12 +59,28 @@ public class LoanInfo extends BaseDomain {
         this.surety = surety;
     }
 
+    public Person getSecondSurety() {
+        return secondSurety;
+    }
+
+    public void setSecondSurety(Person secondSurety) {
+        this.secondSurety = secondSurety;
+    }
+
     public Vehicle getVehicle() {
         return vehicle;
     }
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public Vehicle getTrailer() {
+        return trailer;
+    }
+
+    public void setTrailer(Vehicle trailer) {
+        this.trailer = trailer;
     }
 
     public BankCard getBankCard() {

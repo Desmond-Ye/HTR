@@ -61,6 +61,15 @@ public class LoanInfoController {
         workbook.write(response.getOutputStream());
     }
 
+    @RequestMapping(value = "exportLoanInfoDetail/{loanInfoID}", method = RequestMethod.GET)
+    public void exportLoanInfoDetail(@PathVariable String loanInfoID,HttpServletResponse response) throws IOException{
+        HSSFWorkbook workbook = loanInfoService.exportLoanInfoDetail(loanInfoID);
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-disposition", "attachment;filename=LoanInformation.xls");//默认Excel名称
+        response.flushBuffer();
+        workbook.write(response.getOutputStream());
+    }
+
 
     @RequestMapping(value = "delete", method = RequestMethod.POST)
     @ResponseBody

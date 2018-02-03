@@ -16,10 +16,10 @@
                 <div layout="row">
                     <md-input-container>
                         <label>姓名</label>
-                        <input md-maxlength="5" required md-no-asterisk name="name" ng-model="person.name">
+                        <input md-maxlength="18" required md-no-asterisk name="name" ng-model="person.name">
                         <div ng-messages="newPersonForm.name.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
-                            <div ng-messages-include="views/common/maxlength5.message.html"></div>
+                            <div ng-messages-include="views/common/maxlength18.message.html"></div>
                         </div>
                     </md-input-container>
                     <md-input-container>
@@ -29,6 +29,16 @@
                             <div ng-messages-include="views/common/required.message.html"></div>
                             <div ng-message="md-maxlength">不能超过18个字!</div>
                         </div>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container>
+                        <label>配偶姓名</label>
+                        <input md-maxlength="18" md-no-asterisk name="spouseName" ng-model="person.spouseName">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>配偶身份证号</label>
+                        <input md-maxlength="18" md-no-asterisk name="spouseIdNumber" ng-model="person.spouseIdNumber">
                     </md-input-container>
                 </div>
                 <md-input-container class="md-block">
@@ -42,6 +52,11 @@
                     <div ng-messages="newPersonForm.address.$error">
                         <div ng-messages-include="views/common/required.message.html"></div>
                     </div>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>配偶地址</label>
+                    <input md-no-asterisk name="spouseAddress" ng-model="person.spouseAddress">
                 </md-input-container>
 
                 <div class="row" ng-repeat="phoneInfo in person.phoneInfos">

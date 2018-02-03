@@ -259,8 +259,8 @@
             };
 
             $scope.datePopup = {
-                GTE_endInsuranceTime: false,
-                LTE_endInsuranceTime: false
+                GTE_reviewDate: false,
+                LTE_reviewDate: false
             };
 
         }])
@@ -270,8 +270,7 @@
 
                 if(angular.isDefined($scope.vehicle.registrationDate)){
                     $scope.vehicle.registrationDate = moment($scope.vehicle.registrationDate).toDate();
-                    $scope.vehicle.startInsuranceTime = moment($scope.vehicle.startInsuranceTime).toDate();
-                    $scope.vehicle.endInsuranceTime = moment($scope.vehicle.endInsuranceTime).toDate();
+                    $scope.vehicle.reviewDate = moment($scope.vehicle.reviewDate).toDate();
                 }
 
                 $scope.persons = [];
@@ -349,8 +348,7 @@
 
                 $scope.datePopup = {
                     registrationDate: false,
-                    startInsuranceTime: false,
-                    endInsuranceTime: false
+                    reviewDate: false
                 };
 
             }]);

@@ -52,12 +52,12 @@ public class BeidouRecordController {
     public Map<String, String> saveBeidouRecord(@RequestBody BeidouRecord beidouRecord){
         BeidouRecord beidouRecordTemp = beidouRecordService.findByLicensePlate(beidouRecord.getLicensePlate());
         Map<String, String> result = new HashMap<>();
-        if(null == beidouRecordTemp){
-            beidouRecordService.saveBeidouRecord(beidouRecord);
-            result.put(Constants.RESPONSE_CODE, Constants.CODE_SUCCESS);
-        } else {
+        if(null == beidouRecord.getUuid() && null != beidouRecordTemp){
             result.put(Constants.RESPONSE_CODE, Constants.CODE_FAIL);
             result.put(Constants.RESPONSE_MSG, "车牌号已存在!");
+        } else {
+            beidouRecordService.saveBeidouRecord(beidouRecord);
+            result.put(Constants.RESPONSE_CODE, Constants.CODE_SUCCESS);
         }
         return result;
     }

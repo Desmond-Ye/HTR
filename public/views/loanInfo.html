@@ -102,9 +102,9 @@
                 </md-checkbox></td>
                 <td>{{$index + 1}}</td>
                 <td>{{loanInfo.loanInfoNum}}</td>
-                <td>{{loanInfo.vehicle.licensePlate}}</td>
+                <td>{{loanInfo | listLicensePlate}}</td>
                 <td>{{loanInfo.vehicle.holder.name}}</td>
-                <td>{{loanInfo.surety.name }}</td>
+                <td>{{loanInfo | listSurety }}</td>
                 <td>{{loanInfo.loansNum}}</td>
                 <td>{{loanInfo.nextRepay.loanNum | currentLoanNum}}</td>
                 <td>{{loanInfo.nextRepay.expectMoney | currency:'¥'}}</td>

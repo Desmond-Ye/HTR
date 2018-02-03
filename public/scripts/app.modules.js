@@ -11,6 +11,7 @@ var app = angular.module('app', [
     'vehicle',
     'ngMessages',
     'person',
+    'insurance',
     'bankCard',
     'systemLog',
     'loanInfo',
@@ -28,6 +29,7 @@ var user = angular.module('user', []);
 var role = angular.module('role', []);
 var vehicle = angular.module('vehicle', []);
 var person = angular.module('person', []);
+var insurance = angular.module('insurance', []);
 var bankCard = angular.module('bankCard', []);
 var systemLog = angular.module('systemLog', []);
 var loanInfo = angular.module('loanInfo', []);

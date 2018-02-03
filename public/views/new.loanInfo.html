@@ -29,7 +29,7 @@
                                      md-items="item in querySearchPerson(searchPerson)"
                                      md-item-text="item.name"
                                      md-require-match
-                                     md-floating-label="担保人">
+                                     md-floating-label="主担保人">
                         <md-item-template>
                             <span md-highlight-text="searchPerson">{{item.name}}</span>
                         </md-item-template>
@@ -43,15 +43,34 @@
                             <md-icon md-svg-icon="img/icons/plus.svg"></md-icon>
                         </md-button>
                     </section>
+                    <md-autocomplete flex
+                                     md-input-name="secondSurety"
+                                     md-selected-item="loanInfo.secondSurety"
+                                     md-search-text="secondSearchPerson"
+                                     md-items="item in querySearchPerson(secondSearchPerson)"
+                                     md-item-text="item.name"
+                                     md-require-match
+                                     md-floating-label="次担保人">
+                        <md-item-template>
+                            <span md-highlight-text="searchPerson">{{item.name}}</span>
+                        </md-item-template>
+                    </md-autocomplete>
+                    <section layout-align="left bottom">
+                        <md-button class="md-icon-button" ng-click="addNewPerson()">
+                            <md-icon md-svg-icon="img/icons/plus.svg"></md-icon>
+                        </md-button>
+                    </section>
+                </div>
 
+                <div layout="row">
                     <md-autocomplete flex required
                                      md-input-name="vehicle"
                                      md-selected-item="loanInfo.vehicle"
                                      md-search-text="searchVehicle"
-                                     md-items="item in querySearchVehicle(searchVehicle)"
+                                     md-items="item in querySearchVehicle(searchVehicle, false)"
                                      md-item-text="item.licensePlate"
                                      md-require-match
-                                     md-floating-label="车牌号">
+                                     md-floating-label="主车牌号">
                         <md-item-template>
                             <span md-highlight-text="searchVehicle">{{item.licensePlate}}</span>
                         </md-item-template>
@@ -59,6 +78,23 @@
                             <div ng-message="required">你 <b>必须</b> 选择一个车辆.</div>
                             <div ng-message="md-require-match">请选择一个已存在的车辆.</div>
                         </div>
+                    </md-autocomplete>
+                    <section layout-align="left bottom">
+                        <md-button class="md-icon-button" ng-click="addNewVehicle()">
+                            <md-icon md-svg-icon="img/icons/plus.svg"></md-icon>
+                        </md-button>
+                    </section>
+                    <md-autocomplete flex
+                                     md-input-name="trailer"
+                                     md-selected-item="loanInfo.trailer"
+                                     md-search-text="searchTrailer"
+                                     md-items="item in querySearchVehicle(searchTrailer, true)"
+                                     md-item-text="item.licensePlate"
+                                     md-require-match
+                                     md-floating-label="挂车牌号">
+                        <md-item-template>
+                            <span md-highlight-text="searchVehicle">{{item.licensePlate}}</span>
+                        </md-item-template>
                     </md-autocomplete>
                     <section layout-align="left bottom">
                         <md-button class="md-icon-button" ng-click="addNewVehicle()">
@@ -83,14 +119,14 @@
                 <div layout="row">
                     <md-input-container>
                         <label>贷款额</label>
-                        <input type="number" required md-no-asterisk name="loanAmount" ng-model="loanInfo.loanAmount">
+                        <input required md-no-asterisk name="loanAmount" ng-model="loanInfo.loanAmount">
                         <div ng-messages="newLoanInfoForm.loanAmount.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>
                     </md-input-container>
                     <md-input-container>
                         <label>应还款总额</label>
-                        <input type="number" required md-no-asterisk name="totalRepayment"
+                        <input required md-no-asterisk name="totalRepayment"
                                ng-model="loanInfo.totalRepayment">
                         <div ng-messages="newLoanInfoForm.totalRepayment.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
@@ -120,7 +156,7 @@
                 <div layout="row" ng-repeat="item in loanInfo.loanRecords">
                     <md-input-container>
                         <label>贷款期数</label>
-                        <input type="number" required md-no-asterisk name="loanNum{{$index}}" ng-model="item.loanNum">
+                        <input required md-no-asterisk name="loanNum{{$index}}" ng-model="item.loanNum">
                         <div ng-messages="newLoanInfoForm['loanNum'+$index].$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>

@@ -22,6 +22,7 @@ import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -40,6 +41,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Service
 @Transactional
@@ -290,6 +293,511 @@ public class LoanInfoServiceImpl implements LoanInfoService {
 
         CellRangeAddress cellRangeAddress = new CellRangeAddress(rowNum, rowNum, 0, 14);
         sheet.addMergedRegion(cellRangeAddress);
+
+        return workbook;
+    }
+
+    @Override
+    public HSSFWorkbook exportLoanInfoDetail(String loanInfoID) {
+
+        LoanInfo loanInfo = loanInfoRepository.findOne(loanInfoID);
+        HSSFWorkbook workbook = new HSSFWorkbook();
+        HSSFSheet sheet = workbook.createSheet("保利汽贸车辆信息表");
+        //设置为居中加粗
+        HSSFCellStyle styleTitle = workbook.createCellStyle();
+        HSSFFont fontTitle = workbook.createFont();
+        fontTitle.setBold(true);
+        styleTitle.setWrapText(true);
+        styleTitle.setAlignment(HorizontalAlignment.CENTER);
+        fontTitle.setFontHeight((short)320);
+        styleTitle.setFont(fontTitle);
+
+        HSSFFont fontHeader1 = workbook.createFont();
+        fontHeader1.setBold(true);
+        fontHeader1.setFontHeight((short)220);
+        HSSFCellStyle styleHeader1 = workbook.createCellStyle();
+        styleHeader1.setWrapText(true);
+        styleHeader1.setAlignment(HorizontalAlignment.CENTER);
+        styleHeader1.setFont(fontHeader1);
+
+        HSSFFont fontHeader2 = workbook.createFont();
+        fontHeader2.setBold(true);
+        fontHeader2.setFontHeight((short)200);
+        HSSFCellStyle styleHeader2 = workbook.createCellStyle();
+        styleHeader2.setWrapText(true);
+        styleHeader2.setAlignment(HorizontalAlignment.CENTER);
+        styleHeader2.setFont(fontHeader2);
+
+        HSSFFont fontHeader3 = workbook.createFont();
+        fontHeader3.setBold(true);
+        fontHeader3.setFontHeight((short)180);
+        HSSFCellStyle styleHeader3 = workbook.createCellStyle();
+        styleHeader3.setAlignment(HorizontalAlignment.LEFT);
+        styleHeader3.setFont(fontHeader3);
+
+
+        HSSFFont fontContent = workbook.createFont();
+        fontContent.setBold(false);
+        fontContent.setFontHeight((short)180);
+        HSSFCellStyle styleContent = workbook.createCellStyle();
+        styleContent.setWrapText(true);
+        styleContent.setAlignment(HorizontalAlignment.CENTER);
+        styleContent.setFont(fontContent);
+
+        HSSFCellStyle styleDate=workbook.createCellStyle();
+        styleDate.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy"));
+        fontContent.setBold(false);
+        fontContent.setFontHeight((short)180);
+        styleContent.setFont(fontContent);
+
+        sheet.setColumnWidth(0, 6 * 256);
+        sheet.setColumnWidth(1, 11 * 256);
+        sheet.setColumnWidth(2, 11 * 256);
+        sheet.setColumnWidth(3, 11 * 256);
+        sheet.setColumnWidth(4, 11 * 256);
+        sheet.setColumnWidth(5, 11 * 256);
+        sheet.setColumnWidth(6, 11 * 256);
+        sheet.setColumnWidth(7, 11 * 256);
+        sheet.setColumnWidth(8, 11 * 256);
+
+        int rowNum = 0;
+
+        HSSFRow row;
+        row = sheet.createRow(rowNum);
+        HSSFCell cell;
+        cell = row.createCell(0);
+        cell.setCellValue("保利汽贸车辆信息表");
+        cell.setCellStyle(styleTitle);
+        CellRangeAddress cellRangeAddressRow1 = new CellRangeAddress(rowNum, rowNum + 1, 0, 8);
+        sheet.addMergedRegion(cellRangeAddressRow1);
+
+        rowNum = rowNum + 2;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("档案号：" + loanInfo.getLoanInfoNum());
+        cell.setCellStyle(styleHeader3);
+        CellRangeAddress cellRangeAddressRow2 = new CellRangeAddress(rowNum, rowNum, 0, 8);
+        sheet.addMergedRegion(cellRangeAddressRow2);
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("客户信息");
+        cell.setCellStyle(styleHeader1);
+        CellRangeAddress cellRangeAddressRow3 = new CellRangeAddress(rowNum, rowNum + 2, 0, 0);
+        sheet.addMergedRegion(cellRangeAddressRow3);
+
+        cell = row.createCell(1);
+        cell.setCellValue("姓名");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue("身份证号");
+        cell.setCellStyle(styleHeader2);
+        CellRangeAddress cellRangeAddressRow4 = new CellRangeAddress(rowNum, rowNum, 2, 3);
+        sheet.addMergedRegion(cellRangeAddressRow4);
+
+        cell = row.createCell(4);
+        cell.setCellValue("配偶姓名");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(5);
+        cell.setCellValue("配偶身份证号");
+        cell.setCellStyle(styleHeader2);
+        CellRangeAddress cellRangeAddressRow5 = new CellRangeAddress(rowNum, rowNum, 5, 6);
+        sheet.addMergedRegion(cellRangeAddressRow5);
+
+        cell = row.createCell(7);
+        cell.setCellValue("电话号码");
+        cell.setCellStyle(styleHeader2);
+        CellRangeAddress cellRangeAddressRow6 = new CellRangeAddress(rowNum, rowNum, 7, 8);
+        sheet.addMergedRegion(cellRangeAddressRow6);
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getName());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getIdNumber());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow7 = new CellRangeAddress(rowNum, rowNum, 2, 3);
+        sheet.addMergedRegion(cellRangeAddressRow7);
+
+        cell = row.createCell(4);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getSpouseName());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(5);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getSpouseIdNumber());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow8 = new CellRangeAddress(rowNum, rowNum, 5, 6);
+        sheet.addMergedRegion(cellRangeAddressRow8);
+
+        cell = row.createCell(7);
+        StringBuilder phoneInfos = new StringBuilder();
+        loanInfo.getVehicle().getHolder().getPhoneInfos().forEach(phoneInfo -> {
+            if(null != phoneInfo.getDescription() && !"".equals(phoneInfo.getDescription())){
+                phoneInfos.append(phoneInfo.getDescription());
+                phoneInfos.append(":");
+            }
+            phoneInfos.append(phoneInfo.getPhoneNum());
+            phoneInfos.append("/");
+        });
+        cell.setCellValue(phoneInfos.toString().substring(0, phoneInfos.length() - 1));
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow9 = new CellRangeAddress(rowNum, rowNum + 1, 7, 8);
+        sheet.addMergedRegion(cellRangeAddressRow9);
+//
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue("地址");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getAddress());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow10 = new CellRangeAddress(rowNum, rowNum, 2, 3);
+        sheet.addMergedRegion(cellRangeAddressRow10);
+
+        cell = row.createCell(4);
+        cell.setCellValue("配偶地址");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(5);
+        cell.setCellValue(loanInfo.getVehicle().getHolder().getSpouseAddress());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow11 = new CellRangeAddress(rowNum, rowNum, 5, 6);
+        sheet.addMergedRegion(cellRangeAddressRow11);
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("保人信息");
+        cell.setCellStyle(styleHeader1);
+        CellRangeAddress cellRangeAddressRow12 = new CellRangeAddress(rowNum, rowNum + 2, 0, 0);
+        sheet.addMergedRegion(cellRangeAddressRow12);
+
+        cell = row.createCell(1);
+        cell.setCellValue("保人一");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue("电话");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(3);
+        cell.setCellValue("身份证号");
+        cell.setCellStyle(styleHeader2);
+        CellRangeAddress cellRangeAddressRow13 = new CellRangeAddress(rowNum, rowNum, 3, 4);
+        sheet.addMergedRegion(cellRangeAddressRow13);
+
+        cell = row.createCell(5);
+        cell.setCellValue("保人二");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(6);
+        cell.setCellValue("电话");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(7);
+        cell.setCellValue("身份证号");
+        cell.setCellStyle(styleHeader2);
+        CellRangeAddress cellRangeAddressRow14 = new CellRangeAddress(rowNum, rowNum, 7, 8);
+        sheet.addMergedRegion(cellRangeAddressRow14);
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue(loanInfo.getSurety().getName());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(2);
+        StringBuilder stringBuilder = new StringBuilder();
+        loanInfo.getSurety().getPhoneInfos().forEach(phoneInfo -> {
+            if(null != phoneInfo.getDescription() && !"".equals(phoneInfo.getDescription())){
+                stringBuilder.append(phoneInfo.getDescription());
+                stringBuilder.append(":");
+            }
+            stringBuilder.append(phoneInfo.getPhoneNum());
+            stringBuilder.append("/");
+        });
+        cell.setCellValue(stringBuilder.substring(0, stringBuilder.length() - 1).toString());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(3);
+        cell.setCellValue(loanInfo.getSurety().getIdNumber());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow15 = new CellRangeAddress(rowNum, rowNum, 3, 4);
+        sheet.addMergedRegion(cellRangeAddressRow15);
+
+        if(null != loanInfo.getSecondSurety()){
+            cell = row.createCell(5);
+            cell.setCellValue(loanInfo.getSecondSurety().getName());
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(6);
+            StringBuilder stringBuilder1 = new StringBuilder();
+            loanInfo.getSecondSurety().getPhoneInfos().forEach(phoneInfo -> {
+                if(null != phoneInfo.getDescription() && !"".equals(phoneInfo.getDescription())){
+                    stringBuilder1.append(phoneInfo.getDescription());
+                    stringBuilder1.append(":");
+                }
+                stringBuilder1.append(phoneInfo.getPhoneNum());
+                stringBuilder1.append("/");
+            });
+            cell.setCellValue(stringBuilder1.substring(0, stringBuilder1.length() - 1).toString());
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(7);
+            cell.setCellValue(loanInfo.getSecondSurety().getIdNumber());
+            cell.setCellStyle(styleContent);
+            CellRangeAddress cellRangeAddressRow16 = new CellRangeAddress(rowNum, rowNum, 7, 8);
+            sheet.addMergedRegion(cellRangeAddressRow16);
+        }
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue("地址");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getSurety().getAddress());
+        cell.setCellStyle(styleContent);
+        CellRangeAddress cellRangeAddressRow17 = new CellRangeAddress(rowNum, rowNum, 2, 3);
+        sheet.addMergedRegion(cellRangeAddressRow17);
+
+        cell = row.createCell(4);
+        cell.setCellValue("地址");
+        cell.setCellStyle(styleHeader2);
+
+        if(null != loanInfo.getSecondSurety()){
+            cell = row.createCell(5);
+            cell.setCellValue(loanInfo.getSecondSurety().getAddress());
+            cell.setCellStyle(styleContent);
+            CellRangeAddress cellRangeAddressRow18 = new CellRangeAddress(rowNum, rowNum, 5, 6);
+            sheet.addMergedRegion(cellRangeAddressRow18);
+        }
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("车辆信息");
+        cell.setCellStyle(styleHeader1);
+        CellRangeAddress cellRangeAddressRow19 = new CellRangeAddress(rowNum, rowNum + 2, 0, 0);
+        sheet.addMergedRegion(cellRangeAddressRow19);
+
+        cell = row.createCell(1);
+        cell.setCellValue("车辆品牌");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue("车牌号");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(3);
+        cell.setCellValue("车架号");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(4);
+        cell.setCellValue("上户日期");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(5);
+        cell.setCellValue("挂车品牌");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(6);
+        cell.setCellValue("挂车牌号");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(7);
+        cell.setCellValue("挂车架号");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(8);
+        cell.setCellValue("上户日期");
+        cell.setCellStyle(styleHeader2);
+
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue(loanInfo.getVehicle().getBrand());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getVehicle().getLicensePlate());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(3);
+        cell.setCellValue(loanInfo.getVehicle().getEngineNumber());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(4);
+        cell.setCellValue(loanInfo.getVehicle().getRegistrationDate());
+        cell.setCellStyle(styleDate);
+
+        if(null != loanInfo.getTrailer()){
+            cell = row.createCell(5);
+            cell.setCellValue(loanInfo.getTrailer().getBrand());
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(6);
+            cell.setCellValue(loanInfo.getTrailer().getLicensePlate());
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(7);
+            cell.setCellValue(loanInfo.getTrailer().getEngineNumber());
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(8);
+            cell.setCellValue(loanInfo.getTrailer().getRegistrationDate());
+            cell.setCellStyle(styleDate);
+        }
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(1);
+        cell.setCellValue("发动机号");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getVehicle().getFrameNumber());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(3);
+        cell.setCellValue("贷款额");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(4);
+        cell.setCellValue(loanInfo.getLoanAmount());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(5);
+        cell.setCellValue("贷款期限");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(6);
+        cell.setCellValue(loanInfo.getLoansNum());
+        cell.setCellStyle(styleContent);
+
+        cell = row.createCell(7);
+        cell.setCellValue("放款时间");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(8);
+        cell.setCellValue(loanInfo.getLoanDate());
+        cell.setCellStyle(styleDate);
+
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("期数");
+        cell.setCellStyle(styleHeader1);
+
+        cell = row.createCell(1);
+        cell.setCellValue("应还时间");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(2);
+        cell.setCellValue("应还月款");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(3);
+        cell.setCellValue("实收时间");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(4);
+        cell.setCellValue("实收金额");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(5);
+        cell.setCellValue("逾期");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(6);
+        cell.setCellValue("余额");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(7);
+        cell.setCellValue("收款人");
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(8);
+        cell.setCellValue("备注");
+        cell.setCellStyle(styleHeader2);
+
+        int i = 1;
+        for (LoanRecord loanRecord : loanInfo.getLoanRecords()) {
+            rowNum = rowNum + 1;
+            row = sheet.createRow(rowNum);
+            cell = row.createCell(0);
+            cell.setCellValue(i++);
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(1);
+            cell.setCellValue(loanRecord.getExpectDate());
+            cell.setCellStyle(styleDate);
+
+            cell = row.createCell(2);
+            cell.setCellValue(loanRecord.getExpectMoney());
+            cell.setCellStyle(styleContent);
+
+            if(!loanRecord.isCompleted()){
+                continue;
+            }
+
+            cell = row.createCell(3);
+            StringBuilder date1 = new StringBuilder();
+            StringBuilder pence1 = new StringBuilder();
+            Double left = loanRecord.getExpectMoney();
+            Set<String> names = new TreeSet<>();
+            for(SubLoanRecord subLoanRecord: loanRecord.getSubLoanRecords()){
+                date1.append(subLoanRecord.getReceiptDate());
+                date1.append("/");
+                pence1.append(subLoanRecord.getReceipts());
+                pence1.append("/");
+                names.add(subLoanRecord.getPayee().getUserName());
+                left = MoneyCalculator.subtract(left, subLoanRecord.getReceipts());
+            }
+            if(date1.length() > 0){
+                cell.setCellValue(date1.substring(0, date1.length()-1));
+                cell.setCellStyle(styleContent);
+                cell = row.createCell(4);
+                cell.setCellValue(pence1.substring(0, pence1.length() - 1));
+                cell.setCellStyle(styleContent);
+            } else {
+                cell.setCellValue(loanRecord.getActualDate());
+                cell.setCellStyle(styleDate);
+                cell = row.createCell(4);
+                cell.setCellValue(loanRecord.getExpectMoney());
+                cell.setCellStyle(styleContent);
+            }
+
+
+            cell = row.createCell(5);
+            if(loanRecord.getOverdueDays() >= 0){
+                cell.setCellValue("未逾期");
+            } else {
+                cell.setCellValue(Math.abs(loanRecord.getOverdueDays()) + "天");
+            }
+            cell.setCellStyle(styleContent);
+
+
+            cell = row.createCell(6);
+            cell.setCellValue(left);
+            cell.setCellStyle(styleContent);
+
+            cell = row.createCell(7);
+            cell.setCellValue(names.toString());
+            cell.setCellStyle(styleContent);
+
+        }
 
         return workbook;
     }

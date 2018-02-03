@@ -31,20 +31,6 @@
                     </md-input-container>
                 </div>
 
-                <div layout="row">
-                    <md-input-container flex="60">
-                        <label>车架号</label>
-                        <input required md-no-asterisk name="frameNumber" ng-model="vehicle.frameNumber">
-                        <div ng-messages="newVehicleForm.frameNumber.$error">
-                            <div ng-messages-include="views/common/required.message.html"></div>
-                        </div>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>评估价</label>
-                        <input type="number" md-no-asterisk name="evaluation" ng-model="vehicle.evaluation">
-                    </md-input-container>
-                </div>
-
                 <div layout="row" layout-align="center center">
                     <md-input-container>
                         <label>上户时间</label>
@@ -83,13 +69,35 @@
                 <div layout="row">
                     <md-input-container>
                         <label>审车时间</label>
-                        <input required md-no-asterisk uib-datepicker-popup name="reviewDate"
+                        <input md-no-asterisk uib-datepicker-popup name="reviewDate"
                                ng-model="vehicle.reviewDate"
                                ng-click="openDatePopup('reviewDate')" is-open="datePopup.reviewDate"
                                show-button-bar="false"/>
-                        <div ng-messages="newVehicleForm.reviewDate.$error">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>评估价</label>
+                        <input md-no-asterisk name="evaluation" ng-model="vehicle.evaluation">
+                    </md-input-container>
+                </div>
+
+                <div layout="row">
+                    <md-input-container flex="60">
+                        <label>车架号</label>
+                        <input required md-no-asterisk name="frameNumber" ng-model="vehicle.frameNumber">
+                        <div ng-messages="newVehicleForm.frameNumber.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <md-checkbox name="trailer" ng-model="vehicle.trailer">
+                            是挂车吗
+                        </md-checkbox>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="60">
+                        <label>发动机号</label>
+                        <input md-no-asterisk name="engineNumber" ng-model="vehicle.engineNumber">
                     </md-input-container>
                     <md-input-container>
                         <md-checkbox name="detain" ng-model="vehicle.detain">

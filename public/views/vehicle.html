@@ -24,14 +24,14 @@
                     <input ng-model="facet.search_LIKEIGNORE_frameNumber">
                 </md-input-container>
                 <md-input-container>
-                    <label>保险到期时间从</label>
-                    <input md-no-asterisk uib-datepicker-popup ng-model="facet.search_GTE_endInsuranceTime_DATE"
-                           ng-click="openDatePopup('GTE_endInsuranceTime')" is-open="datePopup.GTE_endInsuranceTime" show-button-bar="false"/>
+                    <label>审车时间从</label>
+                    <input md-no-asterisk uib-datepicker-popup ng-model="facet.search_GTE_reviewDate_DATE"
+                           ng-click="openDatePopup('GTE_reviewDate')" is-open="datePopup.GTE_reviewDate" show-button-bar="false"/>
                 </md-input-container>
                 <md-input-container>
                     <label>到</label>
-                    <input md-no-asterisk uib-datepicker-popup ng-model="facet.search_LTE_endInsuranceTime_DATE"
-                           ng-click="openDatePopup('LTE_endInsuranceTime')" is-open="datePopup.LTE_endInsuranceTime" show-button-bar="false"/>
+                    <input md-no-asterisk uib-datepicker-popup ng-model="facet.search_LTE_reviewDate_DATE"
+                           ng-click="openDatePopup('LTE_reviewDate')" is-open="datePopup.LTE_reviewDate" show-button-bar="false"/>
                 </md-input-container>
                 <md-input-container class="md-block" flex-gt-sm>
                     <label>状态</label>
@@ -81,10 +81,11 @@
                 <th class="col-sm-1">车牌号</th>
                 <th class="col-sm-2">车辆品牌</th>
                 <th class="col-sm-1">车架号</th>
+                <th class="col-sm-1">发动机号</th>
                 <th class="col-sm-1">上户时间</th>
-                <th class="col-sm-2">保险时间</th>
-                <th class="col-sm-2">保险剩余天数</th>
+                <th class="col-sm-1">审车时间</th>
                 <th class="col-sm-1">评估价</th>
+                <th class="col-sm-1">车辆类型</th>
                 <th class="col-sm-1">状态</th>
             </tr>
             </thead>
@@ -100,10 +101,11 @@
                 <td>{{vehicle.licensePlate}}</td>
                 <td>{{vehicle.brand}}</td>
                 <td>{{vehicle.frameNumber | uppercase}}</td>
+                <td>{{vehicle.engineNumber | uppercase}}</td>
                 <td>{{vehicle.registrationDate}}</td>
-                <td>{{vehicle.startInsuranceTime}}~{{vehicle.endInsuranceTime}}</td>
-                <td>{{vehicle.leftDays | isOverdue}}</td>
+                <td>{{vehicle.reviewDate}}</td>
                 <td>{{vehicle.evaluation | currency:'￥'}}</td>
+                <td>{{vehicle.trailer | isTrailer}}</td>
                 <td>{{vehicle.detain | isDetain}}</td>
             </tr>
             </tbody>
