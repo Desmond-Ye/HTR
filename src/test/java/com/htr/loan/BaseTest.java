@@ -470,31 +470,43 @@ public class BaseTest extends LoanApplicationTests {
         List<Resource> resources = resource21.getChildrenRes();
 
         Resource subResource2 = new Resource();
-        subResource2.setResourceName("保险管理");
-        subResource2.setResPath("loan/insurance");
+        subResource2.setResourceName("续保记录查询");
+        subResource2.setResPath("loan/insuranceRenewal");
         subResource2.setParentRes(resource21);
         resources.add(subResource2);
 
-        Resource resource31_button1 = new Resource();
-        resource31_button1.setParentRes(subResource2);
-        resource31_button1.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource31_button1.setResourceName("新增");
-        resource31_button1.setResPath("new");
-
-        Resource resource31_button6 = new Resource();
-        resource31_button6.setParentRes(subResource2);
-        resource31_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource31_button6.setResourceName("修改");
-        resource31_button6.setResPath("update");
-
-        Resource resource31_button2 = new Resource();
-        resource31_button2.setParentRes(subResource2);
-        resource31_button2.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
-        resource31_button2.setResourceName("删除");
-        resource31_button2.setResPath("delete");
-
-        subResource2.setChildrenRes(Arrays.asList(resource31_button1,resource31_button6,resource31_button2));
-
+//        Resource subResource2 = new Resource();
+//        subResource2.setResourceName("保险管理");
+//        subResource2.setResPath("loan/insurance");
+//        subResource2.setParentRes(resource21);
+//        resources.add(subResource2);
+//
+//        Resource resource31_button1 = new Resource();
+//        resource31_button1.setParentRes(subResource2);
+//        resource31_button1.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource31_button1.setResourceName("新增");
+//        resource31_button1.setResPath("new");
+//
+//        Resource resource31_button6 = new Resource();
+//        resource31_button6.setParentRes(subResource2);
+//        resource31_button6.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource31_button6.setResourceName("修改");
+//        resource31_button6.setResPath("update");
+//
+//        Resource resource31_button3 = new Resource();
+//        resource31_button3.setParentRes(subResource2);
+//        resource31_button3.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource31_button3.setResourceName("续保");
+//        resource31_button3.setResPath("renewal");
+//
+//        Resource resource31_button2 = new Resource();
+//        resource31_button2.setParentRes(subResource2);
+//        resource31_button2.setResourceType(Constants.RESOURCE_TYPE_BUTTON);
+//        resource31_button2.setResourceName("删除");
+//        resource31_button2.setResPath("delete");
+//
+//        subResource2.setChildrenRes(Arrays.asList(resource31_button1,resource31_button6,resource31_button2,resource31_button3));
+//
         resource21.setChildrenRes(resources);
         resourceService.saveResource(resource21);
     }

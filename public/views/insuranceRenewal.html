@@ -1,7 +1,7 @@
 <md-card class="_md">
     <md-card-title>
         <md-card-title-text>
-            <span class="md-headline">保险管理</span>
+            <span class="md-headline">保险续期查询</span>
         </md-card-title-text>
     </md-card-title>
     <md-card-header>
@@ -9,37 +9,23 @@
             <section flex="100" layout="row" layout-sm="column" layout-align="center bottom" layout-wrap>
                 <md-input-container class="md-block" flex-gt-sm>
                     <label>姓名</label>
-                    <input ng-model="facet['search_LIKE_vehicle.holder.name']">
+                    <input ng-model="facet['search_LIKE_insurance.vehicle.holder.name']">
                 </md-input-container>
                 <md-input-container class="md-block" flex-gt-sm>
                     <label>车牌号</label>
-                    <input ng-model="facet['search_LIKEIGNORE_vehicle.licensePlate']">
+                    <input ng-model="facet['search_LIKEIGNORE_insurance.vehicle.licensePlate']">
                 </md-input-container>
                 <md-input-container class="md-block" flex-gt-sm>
-                    <label>保险名称</label>
+                    <label>续保名称</label>
                     <input ng-model="facet.search_LIKE_insuranceName">
                 </md-input-container>
                 <md-input-container class="md-block" flex-gt-sm>
-                    <label>保险公司</label>
+                    <label>续保公司</label>
                     <input ng-model="facet.search_LIKEIGNORE_insuranceCompany">
                 </md-input-container>
                 <div class="md-block" flex-gt-sm>
-                    <md-button class="md-raised" ng-click="searchInsurances()">查询</md-button>
+                    <md-button class="md-raised" ng-click="searchInsuranceRenewals()">查询</md-button>
                 </div>
-            </section>
-            <section layout="row" layout-sm="column" layout-align="left bottom" layout-wrap>
-                <md-button class="md-raised" ng-show="currentButtons.new.show" ng-click="showNewInsurance($event)">
-                    {{currentButtons.new.name}}
-                </md-button>
-                <md-button class="md-raised md-primary" ng-show="currentButtons.update.show"
-                           ng-click="showEditInsurance($event)">{{currentButtons.update.name}}
-                </md-button>
-                <md-button class="md-raised md-primary" ng-show="currentButtons.renewal.show"
-                           ng-click="showInsuranceRenewal($event)">{{currentButtons.renewal.name}}
-                </md-button>
-                <md-button class="md-raised md-warn" ng-show="currentButtons.delete.show"
-                           ng-click="removeInsurances($event)">{{currentButtons.delete.name}}
-                </md-button>
             </section>
         </div>
     </md-card-header>
@@ -60,37 +46,35 @@
                 <th class="col-sm-1">车牌号</th>
                 <th class="col-sm-1">车主</th>
                 <!--<th class="col-sm-2">电话号码</th>-->
-                <th class="col-sm-1">上户时间</th>
-                <th class="col-sm-1">审车时间</th>
                 <th class="col-sm-1">保险名称</th>
                 <th class="col-sm-1">保险公司</th>
-                <th class="col-sm-2">保单号</th>
+                <th class="col-sm-3">保单号</th>
                 <th class="col-sm-1">投保时间</th>
                 <th class="col-sm-1">保险到期时间</th>
+                <th class="col-sm-1">续保时间</th>
+                <th class="col-sm-1">续保到期时间</th>
                 <th class="col-sm-1">保险额</th>
-                <th class="col-sm-1">距离到期天数</th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="insurance in items">
+            <tr ng-repeat="insuranceRenewal in items">
                 <td>
-                    <md-checkbox aria-label="Select one" ng-checked="exists(insurance, selected)"
-                                 ng-click="toggle(insurance, selected)">
+                    <md-checkbox aria-label="Select one" ng-checked="exists(insuranceRenewal, selected)"
+                                 ng-click="toggle(insuranceRenewal, selected)">
                     </md-checkbox>
                 </td>
                 <td>{{$index + 1}}</td>
-                <td>{{insurance.vehicle.licensePlate }}</td>
-                <td>{{insurance.vehicle.holder.name }}</td>
-                <!--<td>{{insurance.vehicle.holder.phoneInfos | phoneNums }}</td>-->
-                <td>{{insurance.vehicle.registrationDate }}</td>
-                <td>{{insurance.vehicle.reviewDate }}</td>
-                <td>{{insurance.insuranceName }}</td>
-                <td>{{insurance.insuranceCompany }}</td>
-                <td>{{insurance.insuranceNum }}</td>
-                <td>{{insurance.startInsuranceTime }}</td>
-                <td>{{insurance.endInsuranceTime }}</td>
-                <td>{{insurance.insuranceFee | currency:'¥' }}</td>
-                <td>{{insurance.leftDays | isOverdue}}</td>
+                <td>{{insuranceRenewal.insurance.vehicle.licensePlate }}</td>
+                <td>{{insuranceRenewal.insurance.vehicle.holder.name }}</td>
+                <!--<td>{{insuranceRenewal.vehicle.holder.phoneInfos | phoneNums }}</td>-->
+                <td>{{insuranceRenewal | convertInsuranceName}}</td>
+                <td>{{insuranceRenewal | convertInsuranceCompany}}</td>
+                <td>{{insuranceRenewal | convertInsuranceNum}}</td>
+                <td>{{insuranceRenewal.startInsuranceTime }}</td>
+                <td>{{insuranceRenewal.endInsuranceTime }}</td>
+                <td>{{insuranceRenewal.insurance.startInsuranceTime }}</td>
+                <td>{{insuranceRenewal.insurance.endInsuranceTime }}</td>
+                <td>{{insuranceRenewal | convertInsuranceFee}}</td>
             </tr>
             </tbody>
         </table>

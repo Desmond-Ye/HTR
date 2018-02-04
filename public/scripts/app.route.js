@@ -27,6 +27,9 @@
             }).when('/loan/insurance', {
                 templateUrl: 'views/insurance.html',
                 controller: 'insuranceController'
+            }).when('/loan/insuranceRenewal', {
+                templateUrl: 'views/insuranceRenewal.html',
+                controller: 'insuranceRenewalController'
             }).when('/loan/bankCard', {
                 templateUrl: 'views/bankCard.html',
                 controller: 'bankCardController'

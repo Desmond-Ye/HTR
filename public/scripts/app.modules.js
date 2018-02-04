@@ -20,7 +20,8 @@ var app = angular.module('app', [
     'beidouRecord',
     'beidouBranch',
     'beidouRenewal',
-    'beidouRepair'
+    'beidouRepair',
+    'insuranceRenewal'
 ]);
 var test = angular.module('test', []);
 var auth = angular.module('auth', []);
@@ -30,6 +31,7 @@ var role = angular.module('role', []);
 var vehicle = angular.module('vehicle', []);
 var person = angular.module('person', []);
 var insurance = angular.module('insurance', []);
+var insuranceRenewal = angular.module('insuranceRenewal', []);
 var bankCard = angular.module('bankCard', []);
 var systemLog = angular.module('systemLog', []);
 var loanInfo = angular.module('loanInfo', []);

@@ -104,7 +104,7 @@
                 </div>
 
                 <div layout="row">
-                    <md-input-container flex="70">
+                    <md-input-container flex="60">
                         <label>银行卡</label>
                         <md-select name="bankCard" ng-model="loanInfo.bankCard" required>
                             <md-option ng-repeat="bankCard in bankCards" ng-value="bankCard">{{bankCard.cardNumber}}
@@ -114,21 +114,10 @@
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>
                     </md-input-container>
-                </div>
-
-                <div layout="row">
                     <md-input-container>
                         <label>贷款额</label>
                         <input required md-no-asterisk name="loanAmount" ng-model="loanInfo.loanAmount">
                         <div ng-messages="newLoanInfoForm.loanAmount.$error">
-                            <div ng-messages-include="views/common/required.message.html"></div>
-                        </div>
-                    </md-input-container>
-                    <md-input-container>
-                        <label>应还款总额</label>
-                        <input required md-no-asterisk name="totalRepayment"
-                               ng-model="loanInfo.totalRepayment">
-                        <div ng-messages="newLoanInfoForm.totalRepayment.$error">
                             <div ng-messages-include="views/common/required.message.html"></div>
                         </div>
                     </md-input-container>

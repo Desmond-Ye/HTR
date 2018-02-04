@@ -15,6 +15,7 @@ import com.htr.loan.domain.repository.LoanInfoRepository;
 import com.htr.loan.domain.repository.SubLoanRecordRepository;
 import com.htr.loan.domain.repository.SystemLogRepository;
 import com.htr.loan.service.LoanInfoService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -67,6 +68,11 @@ public class LoanInfoServiceImpl implements LoanInfoService {
             loanInfo = loanInfoRepository.save(loanInfo);
             LoanRecord nextRepay = LoanInfoHelper.checkTheNextRepay(loanInfo);
             loanInfo.setNextRepay(nextRepay);
+            double totalPayment = 0d;
+            for(LoanRecord loanRecord : loanInfo.getLoanRecords()){
+                totalPayment = MoneyCalculator.add(totalPayment, loanRecord.getExpectMoney());
+            }
+            loanInfo.setTotalRepayment(totalPayment);
             loanInfo.setLeftDays(DateUtils.between(nextRepay.getExpectDate(), LocalDate.now()));
             loanInfo = loanInfoRepository.save(loanInfo);
             log.setRecordId(loanInfo.getUuid());
@@ -344,15 +350,9 @@ public class LoanInfoServiceImpl implements LoanInfoService {
         styleContent.setAlignment(HorizontalAlignment.CENTER);
         styleContent.setFont(fontContent);
 
-        HSSFCellStyle styleDate=workbook.createCellStyle();
-        styleDate.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy"));
-        fontContent.setBold(false);
-        fontContent.setFontHeight((short)180);
-        styleContent.setFont(fontContent);
-
         sheet.setColumnWidth(0, 6 * 256);
         sheet.setColumnWidth(1, 11 * 256);
-        sheet.setColumnWidth(2, 11 * 256);
+        sheet.setColumnWidth(2, 15 * 256);
         sheet.setColumnWidth(3, 11 * 256);
         sheet.setColumnWidth(4, 11 * 256);
         sheet.setColumnWidth(5, 11 * 256);
@@ -634,12 +634,12 @@ public class LoanInfoServiceImpl implements LoanInfoService {
         cell.setCellStyle(styleContent);
 
         cell = row.createCell(3);
-        cell.setCellValue(loanInfo.getVehicle().getEngineNumber());
+        cell.setCellValue(loanInfo.getVehicle().getFrameNumber());
         cell.setCellStyle(styleContent);
 
         cell = row.createCell(4);
-        cell.setCellValue(loanInfo.getVehicle().getRegistrationDate());
-        cell.setCellStyle(styleDate);
+        cell.setCellValue(DateUtils.YYYYlMMlDD.format(loanInfo.getVehicle().getRegistrationDate()));
+        cell.setCellStyle(styleContent);
 
         if(null != loanInfo.getTrailer()){
             cell = row.createCell(5);
@@ -655,8 +655,8 @@ public class LoanInfoServiceImpl implements LoanInfoService {
             cell.setCellStyle(styleContent);
 
             cell = row.createCell(8);
-            cell.setCellValue(loanInfo.getTrailer().getRegistrationDate());
-            cell.setCellStyle(styleDate);
+            cell.setCellValue(DateUtils.YYYYlMMlDD.format(loanInfo.getTrailer().getRegistrationDate()));
+            cell.setCellStyle(styleContent);
         }
 
         rowNum = rowNum + 1;
@@ -666,7 +666,7 @@ public class LoanInfoServiceImpl implements LoanInfoService {
         cell.setCellStyle(styleHeader2);
 
         cell = row.createCell(2);
-        cell.setCellValue(loanInfo.getVehicle().getFrameNumber());
+        cell.setCellValue(loanInfo.getVehicle().getEngineNumber());
         cell.setCellStyle(styleContent);
 
         cell = row.createCell(3);
@@ -690,8 +690,8 @@ public class LoanInfoServiceImpl implements LoanInfoService {
         cell.setCellStyle(styleHeader2);
 
         cell = row.createCell(8);
-        cell.setCellValue(loanInfo.getLoanDate());
-        cell.setCellStyle(styleDate);
+        cell.setCellValue(DateUtils.YYYYlMMlDD.format(loanInfo.getLoanDate()));
+        cell.setCellStyle(styleContent);
 
 
         rowNum = rowNum + 1;
@@ -733,6 +733,8 @@ public class LoanInfoServiceImpl implements LoanInfoService {
         cell.setCellStyle(styleHeader2);
 
         int i = 1;
+        double left = loanInfo.getTotalRepayment();
+        double receipts = 0d;
         for (LoanRecord loanRecord : loanInfo.getLoanRecords()) {
             rowNum = rowNum + 1;
             row = sheet.createRow(rowNum);
@@ -741,8 +743,8 @@ public class LoanInfoServiceImpl implements LoanInfoService {
             cell.setCellStyle(styleContent);
 
             cell = row.createCell(1);
-            cell.setCellValue(loanRecord.getExpectDate());
-            cell.setCellStyle(styleDate);
+            cell.setCellValue(DateUtils.YYYYlMMlDD.format(loanRecord.getExpectDate()));
+            cell.setCellStyle(styleContent);
 
             cell = row.createCell(2);
             cell.setCellValue(loanRecord.getExpectMoney());
@@ -755,15 +757,16 @@ public class LoanInfoServiceImpl implements LoanInfoService {
             cell = row.createCell(3);
             StringBuilder date1 = new StringBuilder();
             StringBuilder pence1 = new StringBuilder();
-            Double left = loanRecord.getExpectMoney();
             Set<String> names = new TreeSet<>();
-            for(SubLoanRecord subLoanRecord: loanRecord.getSubLoanRecords()){
-                date1.append(subLoanRecord.getReceiptDate());
-                date1.append("/");
+            List<SubLoanRecord> subLoanRecords = subLoanRecordRepository.findAllByLoanRecordAndActiveTrue(loanRecord);
+            for(SubLoanRecord subLoanRecord: subLoanRecords){
+                date1.append(DateUtils.YYYYlMMlDD.format(subLoanRecord.getReceiptDate()));
+                date1.append("\n");
                 pence1.append(subLoanRecord.getReceipts());
-                pence1.append("/");
+                pence1.append("\n");
                 names.add(subLoanRecord.getPayee().getUserName());
                 left = MoneyCalculator.subtract(left, subLoanRecord.getReceipts());
+                receipts = MoneyCalculator.add(receipts, subLoanRecord.getReceipts());
             }
             if(date1.length() > 0){
                 cell.setCellValue(date1.substring(0, date1.length()-1));
@@ -772,8 +775,8 @@ public class LoanInfoServiceImpl implements LoanInfoService {
                 cell.setCellValue(pence1.substring(0, pence1.length() - 1));
                 cell.setCellStyle(styleContent);
             } else {
-                cell.setCellValue(loanRecord.getActualDate());
-                cell.setCellStyle(styleDate);
+                cell.setCellValue(DateUtils.YYYYlMMlDD.format(loanRecord.getActualDate()));
+                cell.setCellStyle(styleContent);
                 cell = row.createCell(4);
                 cell.setCellValue(loanRecord.getExpectMoney());
                 cell.setCellStyle(styleContent);
@@ -794,10 +797,29 @@ public class LoanInfoServiceImpl implements LoanInfoService {
             cell.setCellStyle(styleContent);
 
             cell = row.createCell(7);
-            cell.setCellValue(names.toString());
+            cell.setCellValue(StringUtils.join(names.toArray(), ","));
             cell.setCellStyle(styleContent);
-
         }
+
+        rowNum = rowNum + 1;
+        row = sheet.createRow(rowNum);
+        cell = row.createCell(0);
+        cell.setCellValue("总额");
+        cell.setCellStyle(styleHeader1);
+        CellRangeAddress cellRangeAddressRow20 = new CellRangeAddress(rowNum, rowNum, 0, 1);
+        sheet.addMergedRegion(cellRangeAddressRow20);
+
+        cell = row.createCell(2);
+        cell.setCellValue(loanInfo.getTotalRepayment());
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(4);
+        cell.setCellValue(receipts);
+        cell.setCellStyle(styleHeader2);
+
+        cell = row.createCell(6);
+        cell.setCellValue(left);
+        cell.setCellStyle(styleHeader2);
 
         return workbook;
     }

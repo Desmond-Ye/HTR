@@ -33,6 +33,8 @@
                         return '权限';
                     case 'subLoanRecord':
                         return '贷款还款';
+                    case 'insurance':
+                        return '保险';
                     // default:
                     //     return '未知模块';
                 }

@@ -45,6 +45,7 @@ public interface Constants {
     public static final String MODULE_BANKCARD = "bankCard";
     public static final String MODULE_VEHICLE = "vehicle";
     public static final String MODULE_INSURANCE = "insurance";
+    public static final String MODULE_INSURANCERENEWAL = "insuranceRenewal";
     public static final String MODULE_LOANINFO = "loanInfo";
     public static final String MODULE_BEIDOURECORD = "beidouRecord";
     public static final String MODULE_BEIDOUBRANCH = "beidouBranch";

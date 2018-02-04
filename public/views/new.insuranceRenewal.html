@@ -1,0 +1,109 @@
+<md-dialog aria-label="新建续保数据">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>新建续保数据</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon md-svg-src="img/icons/ic_close_24px.svg" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+        <div class="md-dialog-content">
+            <form name="newInsuranceRenewalForm">
+                <div class="row">
+                </div>
+                <div layout="row">
+                    <md-autocomplete flex required ng-disabled="true"
+                                     md-input-name="vehicle"
+                                     md-selected-item="insuranceRenewal.insurance.vehicle"
+                                     md-search-text="searchVehicle"
+                                     md-items="item in querySearchVehicle(searchVehicle)"
+                                     md-item-text="item.licensePlate"
+                                     md-require-match
+                                     md-floating-label="车牌号">
+                        <md-item-template>
+                            <span md-highlight-text="searchVehicle">{{item.licensePlate}}</span>
+                        </md-item-template>
+                        <div ng-messages="newInsuranceRenewalForm.vehicle.$error">
+                            <div ng-message="required">你 <b>必须</b> 选择一个车辆.</div>
+                            <div ng-message="md-require-match">请选择一个已存在的车辆.</div>
+                        </div>
+                    </md-autocomplete>
+                    <md-input-container>
+                        <label>审车时间</label>
+                        <input ng-disabled="!insuranceRenewal.insurance.vehicle" md-no-asterisk uib-datepicker-popup name="reviewDate"
+                               ng-model="insuranceRenewal.insurance.vehicle.reviewDate"
+                               ng-click="openDatePopup('reviewDate')" is-open="datePopup.reviewDate"
+                               show-button-bar="false"/>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container>
+                        <label>保险名称</label>
+                        <input required md-no-asterisk name="insuranceName" ng-model="insuranceRenewal.insurance.insuranceName">
+                        <div ng-messages="newInsuranceRenewalForm.insuranceName.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>保险公司</label>
+                        <input required md-no-asterisk name="insuranceCompany" ng-model="insuranceRenewal.insurance.insuranceCompany">
+                        <div ng-messages="newInsuranceRenewalForm.insuranceCompany.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex="70">
+                        <label>保单号</label>
+                        <input required md-no-asterisk name="insuranceNum" ng-model="insuranceRenewal.insurance.insuranceNum">
+                        <div ng-messages="newInsuranceRenewalForm.insuranceNum.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>保险额</label>
+                        <input required md-no-asterisk name="insuranceFee" ng-model="insuranceRenewal.insurance.insuranceFee">
+                        <div ng-messages="newInsuranceRenewalForm.insuranceFee.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container>
+                        <label>续保时间</label>
+                        <input required md-no-asterisk uib-datepicker-popup name="startInsuranceTime"
+                               ng-model="insuranceRenewal.insurance.startInsuranceTime"
+                               ng-click="openDatePopup('startInsuranceTime')" is-open="datePopup.startInsuranceTime"
+                               show-button-bar="false"/>
+                        <div ng-messages="newLoanInfoForm.startInsuranceTime.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>保险到期时间</label>
+                        <input required md-no-asterisk uib-datepicker-popup name="endInsuranceTime"
+                               ng-model="insuranceRenewal.insurance.endInsuranceTime"
+                               ng-click="openDatePopup('endInsuranceTime')" is-open="datePopup.endInsuranceTime"
+                               show-button-bar="false"/>
+                        <div ng-messages="newLoanInfoForm.endInsuranceTime.$error">
+                            <div ng-messages-include="views/common/required.message.html"></div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </form>
+        </div>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <md-button class="md-raised md-primary" type="submit"
+                   ng-click="newInsuranceRenewalForm.$valid && saveInsurance()">
+            保存
+        </md-button>
+        <md-button class="md-raised md-warn" ng-click="cancel()">
+            取消
+        </md-button>
+    </md-dialog-actions>
+</md-dialog>
