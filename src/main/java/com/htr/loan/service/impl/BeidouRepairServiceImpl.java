@@ -51,7 +51,7 @@ public class BeidouRepairServiceImpl implements BeidouRepairService {
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRepair.getNewCardNum());
             } else if (beidouRepair.getChangeCardType() == -1) {
-                if(beidouRecord.getBorrowCardFlow()){
+                if(null != beidouRecord.getBorrowCardFlow() && beidouRecord.getBorrowCardFlow()){
                     beidouRepair.setOldCardNum(beidouRecord.getNewCardNum());
                 } else {
                     beidouRecord.setBorrowCardFlow(true);

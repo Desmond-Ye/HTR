@@ -52,7 +52,7 @@ public class BeidouRenewalServiceImpl implements BeidouRenewalService {
                 beidouRecord.setOldCardNum(beidouRecord.getNewCardNum());
                 beidouRecord.setNewCardNum(beidouRenewal.getNewCardNum());
             } else if (beidouRenewal.getChangeCardType() == -1) {
-                if(beidouRecord.getBorrowCardFlow()){
+                if(null != beidouRecord.getBorrowCardFlow() && beidouRecord.getBorrowCardFlow()){
                     beidouRenewal.setOldCardNum(beidouRecord.getNewCardNum());
                 } else {
                     beidouRecord.setBorrowCardFlow(true);
