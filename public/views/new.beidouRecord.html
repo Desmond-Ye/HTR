@@ -80,6 +80,16 @@
                     </md-input-container>
                 </div>
                 <div layout="row">
+                    <md-input-container>
+                        <label>终端厂商</label>
+                        <input md-no-asterisk name="manufacturer" ng-model="beidouRecord.manufacturer">
+                    </md-input-container>
+                    <md-input-container>
+                        <label>HTR编号</label>
+                        <input md-no-asterisk name="htrID" ng-model="beidouRecord.htrID">
+                    </md-input-container>
+                </div>
+                <div layout="row">
                     <md-input-container flex="30">
                         <label>安装类型</label>
                         <md-select required name="installType" ng-model="beidouRecord.installType">

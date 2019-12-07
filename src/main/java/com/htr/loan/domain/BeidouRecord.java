@@ -12,6 +12,7 @@ import java.util.Date;
 @EntityListeners(AuditingEntityListener.class)
 public class BeidouRecord extends BaseDomain {
 
+    private String htrID; //HTR编号
     private String licensePlate;  //车牌号
     private String frameNumber;  //车架号
     private String vehicleType; //车辆类型
@@ -20,6 +21,7 @@ public class BeidouRecord extends BaseDomain {
     private String owner;  //车主
     private String phoneNum; //电话号码
     private String terminalNum; //终端号
+    private String manufacturer; //终端制造商
     private String oldCardNum;  //原始卡号
     private String newCardNum;  //卡号
     private Boolean borrowCardFlow; //是否借流量
@@ -35,6 +37,22 @@ public class BeidouRecord extends BaseDomain {
     private Double installationFee; //安装费
     private long leftDays;//剩余还款天数(可以不要这个属性,在前台动态计算. 但是不要这个属性不好实现按逾期天数排序)
     private String description; //备注
+
+    public String getHtrID() {
+        return htrID;
+    }
+
+    public void setHtrID(String htrID) {
+        this.htrID = htrID;
+    }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
 
     public String getLicensePlate() {
         return licensePlate;
